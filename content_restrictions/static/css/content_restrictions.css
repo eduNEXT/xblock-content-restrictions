@@ -1,0 +1,9 @@
+/* CSS for XblockContentRestrictions */
+
+.content_restrictions_block .count {
+    font-weight: bold;
+}
+
+.content_restrictions_block p {
+    cursor: pointer;
+}
