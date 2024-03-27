@@ -1,67 +1,90 @@
 """TO-DO: Write a description of what this XBlock is."""
-
+from enum import Enum
 import pkg_resources
 from django.utils import translation
+from lazy import lazy
 from xblock.core import XBlock
-from xblock.fields import Integer, Scope
+from xblock.fields import Integer, ReferenceList, Scope, String
 from xblock.fragment import Fragment
+from collections import namedtuple
 from xblockutils.resources import ResourceLoader
-from xblock.utils.studio_editable import StudioEditableBlock
+from xblock.utils.studio_editable import StudioContainerWithNestedXBlocksMixin, StudioEditableXBlockMixin, NestedXBlockSpec
+from xmodule.modulestore.exceptions import ItemNotFoundError
+from xmodule.capa_block import ProblemBlock
+from openassessment.xblock.openassessmentblock import OpenAssessmentBlock
+from xblock.utils.resources import ResourceLoader
 
 
-class XblockContentRestrictions(StudioEditableBlock, XBlock):
+# Make '_' a no-op so we can scrape strings
+_ = lambda text: text
+loader = ResourceLoader(__name__)
+
+
+class ContentRestrictions(Enum):
+    """Types of content restrictions."""
+    IP_WHITELIST = "IP Whitelist"
+    PASSWORD = "Password"
+    BROWSER = "Browser"
+
+
+class XblockContentRestrictions(StudioContainerWithNestedXBlocksMixin, StudioEditableXBlockMixin, XBlock):
     """
     TO-DO: document what your XBlock does.
     """
 
-    # Fields are defined on the class.  You can access them in your code as
-    # self.<fieldname>.
+    CATEGORY = "content_restrictions"
 
-    # TO-DO: delete count, and define your own fields.
-    count = Integer(
-        default=0, scope=Scope.user_state,
-        help="A simple counter, to show something happening",
+    display_name = String(
+        display_name=_("Display Name"),
+        help=_("The display name for this component."),
+        scope=Scope.settings,
+        default=_("Content Restrictions")
     )
+
+    restriction_type = String(
+        display_name=_("Restriction Type"),
+        default=ContentRestrictions.IP_WHITELIST,
+        scope=Scope.settings,
+        values=[
+            {
+                "display_name": restriction.value,
+                "value": restriction.name
+            }
+            for restriction in ContentRestrictions
+        ],
+        help="Type of restriction to apply to learners.",
+    )
+
+    editable_fields = [
+        "display_name",
+        "restriction_type",
+    ]
 
     def resource_string(self, path):
         """Handy helper for getting resources from our kit."""
         data = pkg_resources.resource_string(__name__, path)
         return data.decode("utf8")
 
-    # TO-DO: change this view to display your data your own way.
-    def student_view(self, context=None):
+    def student_view(self, context):
         """
-        Create primary view of the XblockContentRestrictions, shown to students when viewing courses.
+        View for previewing contents in studio.
         """
-        if context:
-            pass  # TO-DO: do something based on the context.
-        html = self.resource_string("static/html/content_restrictions.html")
-        frag = Fragment(html.format(self=self))
-        frag.add_css(self.resource_string("static/css/content_restrictions.css"))
+        children_contents = []
 
-        # Add i18n js
-        statici18n_js_url = self._get_statici18n_js_url()
-        if statici18n_js_url:
-            frag.add_javascript_url(self.runtime.local_resource_url(self, statici18n_js_url))
+        fragment = Fragment()
+        for child_id in self.children:
+            child = self.runtime.get_block(child_id)
+            child_fragment = self._render_child_fragment(child, context, 'student_view')
+            fragment.add_fragment_resources(child_fragment)
+            children_contents.append(child_fragment.content)
 
-        frag.add_javascript(self.resource_string("static/js/src/content_restrictions.js"))
-        frag.initialize_js('XblockContentRestrictions')
-        return frag
-
-    # TO-DO: change this handler to perform your own actions.  You may need more
-    # than one handler, or you may not need any handlers at all.
-    @XBlock.json_handler
-    def increment_count(self, data, suffix=''):
-        """
-        Increments data. An example handler.
-        """
-        if suffix:
-            pass  # TO-DO: Use the suffix when storing data.
-        # Just to show data coming in...
-        assert data['hello'] == 'world'
-
-        self.count += 1
-        return {"count": self.count}
+        render_context = {
+            'block': self,
+            'children_contents': children_contents
+        }
+        render_context.update(context)
+        fragment.add_content(self.loader.render_django_template(self.CHILD_PREVIEW_TEMPLATE, render_context))
+        return fragment
 
     # TO-DO: change this to create the scenarios you'd like to see in the
     # workbench while developing your XBlock.
@@ -80,6 +103,21 @@ class XblockContentRestrictions(StudioEditableBlock, XBlock):
                 </vertical_demo>
              """),
         ]
+
+    def author_view(self, context):
+        """
+        Renders the Studio preview by rendering each child so that they can all be seen and edited.
+        """
+        fragment = Fragment()
+        root_xblock = context.get('root_xblock')
+        is_root = root_xblock and root_xblock.location == self.location
+        if is_root:
+            # User has clicked the "View" link. Show a preview of all possible children:
+            self.render_children(context, fragment, can_reorder=True, can_add=True)
+        # else: When shown on a unit page, don't show any sort of preview -
+        # just the status of this block in the validation area.
+
+        return fragment
 
     @staticmethod
     def _get_statici18n_js_url():
