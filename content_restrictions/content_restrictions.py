@@ -3,19 +3,16 @@ import logging
 from enum import Enum
 import pkg_resources
 from django.utils import translation
-from lazy import lazy
 from xblock.core import XBlock
-from xblock.fields import Integer, ReferenceList, Scope, String, Boolean, List
+from xblock.fields import Scope, String
 from xblock.fragment import Fragment
 from collections import namedtuple
 from xblockutils.resources import ResourceLoader
-from xblock.utils.studio_editable import StudioContainerWithNestedXBlocksMixin, StudioEditableXBlockMixin, NestedXBlockSpec
-from xmodule.modulestore.exceptions import ItemNotFoundError
-from xmodule.capa_block import ProblemBlock
-from openassessment.xblock.openassessmentblock import OpenAssessmentBlock
+from xblock.utils.studio_editable import StudioContainerWithNestedXBlocksMixin, StudioEditableXBlockMixin
 from xblock.utils.resources import ResourceLoader
 from edx_django_utils import ip
 from crum import get_current_request
+from seb_openedx.permissions import get_enabled_permission_classes
 
 
 # Make '_' a no-op so we can scrape strings
@@ -182,8 +179,6 @@ class XblockContentRestrictions(StudioContainerWithNestedXBlocksMixin, StudioEdi
         Returns:
             bool: True if the user has access, False otherwise.
         """
-        from seb_openedx.permissions import get_enabled_permission_classes
-
         access_granted = False
 
         for permission in get_enabled_permission_classes(course_key):
@@ -202,7 +197,10 @@ class XblockContentRestrictions(StudioContainerWithNestedXBlocksMixin, StudioEdi
         self.user_provided_password = data.get('password')
         if data.get('password') == self.password:
             return {'success': True}
-        return {'success': False}
+        return {
+            'success': False,
+            'error_message': 'Incorrect password.',
+        }
 
     # TO-DO: change this to create the scenarios you'd like to see in the
     # workbench while developing your XBlock.

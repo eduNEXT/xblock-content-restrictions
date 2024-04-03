@@ -8,7 +8,7 @@ function XblockContentRestrictions(runtime, element) {
             "password": $(element).find('input[name=password]').val(),
         }
         $.post(handlerUrl, JSON.stringify(data)).done(function(response) {
-            if (response.has_access) {
+            if (response.success) {
                 window.location = window.location.href;
             }
             else {
