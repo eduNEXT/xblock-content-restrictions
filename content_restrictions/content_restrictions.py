@@ -1,18 +1,28 @@
-"""TO-DO: Write a description of what this XBlock is."""
+"""XBlock for content restrictions."""
+
 import logging
 from enum import Enum
+
 import pkg_resources
+from crum import get_current_request
 from django.utils import translation
+from edx_django_utils import ip
 from xblock.core import XBlock
 from xblock.fields import Scope, String
 from xblock.fragment import Fragment
-from collections import namedtuple
-from xblockutils.resources import ResourceLoader
-from xblock.utils.studio_editable import StudioContainerWithNestedXBlocksMixin, StudioEditableXBlockMixin
 from xblock.utils.resources import ResourceLoader
-from edx_django_utils import ip
-from crum import get_current_request
-from seb_openedx.permissions import get_enabled_permission_classes
+from xblock.utils.studio_editable import (
+    StudioContainerWithNestedXBlocksMixin,
+    StudioEditableXBlockMixin,
+)
+from xblockutils.resources import ResourceLoader
+
+try:
+    from seb_openedx.permissions import get_enabled_permission_classes
+except ImportError:
+
+    def get_enabled_permission_classes(course_key):
+        return []
 
 
 # Make '_' a no-op so we can scrape strings
@@ -24,15 +34,31 @@ LOG = logging.getLogger(__name__)
 class ContentRestrictions(Enum):
     """
     Enum for content restrictions.
-    """
-    NO_RESTRICTION = 'NO_RESTRICTION'
-    IP_WHITELIST = 'IP_WHITELIST'
-    PASSWORD = 'PASSWORD'
-    SEB_BROWSER = 'SEB_BROWSER'
 
-class XblockContentRestrictions(StudioContainerWithNestedXBlocksMixin, StudioEditableXBlockMixin, XBlock):
+    NO_RESTRICTION: No restriction is applied to the content.
+    IP_WHITELIST: Only learners with IP addresses in the whitelist will have access to the content.
+    PASSWORD: Learners will need to enter a password to access the content.
+    SEB_BROWSER: Learners will need to access the content using the Safe Exam Browser.
     """
-    TO-DO: document what your XBlock does.
+
+    NO_RESTRICTION = "No Restriction"
+    IP_WHITELIST = "IP Whitelist"
+    PASSWORD = "Password"
+    SEB_BROWSER = "Secure Exam Browser (SEB)"
+
+
+RESTRICTION_HTML_TEMPLATES = {
+    ContentRestrictions.IP_WHITELIST.name: "restricted_ip_whitelist.html",
+    ContentRestrictions.PASSWORD.name: "restricted_password.html",
+    ContentRestrictions.SEB_BROWSER.name: "restricted_seb_browser.html",
+}
+
+
+class XblockContentRestrictions(
+    StudioContainerWithNestedXBlocksMixin, StudioEditableXBlockMixin, XBlock
+):
+    """
+    XBlock for content restrictions that can be applied to the child content.
     """
 
     CATEGORY = "content_restrictions"
@@ -41,7 +67,7 @@ class XblockContentRestrictions(StudioContainerWithNestedXBlocksMixin, StudioEdi
         display_name=_("Display Name"),
         help=_("The display name for this component."),
         scope=Scope.settings,
-        default=_("Content Restrictions")
+        default=_("Content Restrictions"),
     )
 
     restriction_type = String(
@@ -50,35 +76,39 @@ class XblockContentRestrictions(StudioContainerWithNestedXBlocksMixin, StudioEdi
         default="NO_RESTRICTION",
         values=[
             {
-                "display_name": "No Restriction",
-                "value": "NO_RESTRICTION",
-            },
-            {
-                "display_name": "IP Whitelist",
-                "value": "IP_WHITELIST",
-            },
-            {
-                "display_name": "Password",
-                "value": "PASSWORD",
-            },
-            {
-                "display_name": "SEB Browser",
-                "value": "SEB_BROWSER",
-            },
+                "display_name": restriction_type.value,
+                "value": restriction_type.name,
+            }
+            for restriction_type in ContentRestrictions
         ],
-        help="Type of restriction to apply to learners.",
+        help=_(
+            """Type of restriction to apply to learners. If no restriction is selected, all learners will have access to
+        the content. If IP Whitelist is selected, only learners with IP addresses in the whitelist will have access to
+        the content. If Password is selected, learners will need to enter a password to access the content. If SEB
+        Browser is selected, learners will need to access the content using the Safe Exam Browser.
+        """
+        ),
     )
 
     ip_whitelist = String(
         display_name=_("IP Whitelist"),
         scope=Scope.settings,
-        help=_("List of IP addresses that can access the content. Use commas to separate multiple IP addresses."),
+        help=_(
+            """List of IP addresses that can access the content. Use commas to separate multiple IP addresses. If the
+        learner's IP address is not in the whitelist, they will not have access to the content. If the IP Whitelist
+        restriction is not selected, this field will be ignored.
+          """
+        ),
     )
 
     password = String(
         display_name=_("Password"),
         scope=Scope.settings,
-        help=_("Password required to access the content."),
+        help=_(
+            """Password required to access the content. If the learner does not enter the correct password, they will not
+        have access to the content. If the Password restriction is not selected, this field will be ignored.
+         """
+        ),
     )
 
     user_provided_password = String(
@@ -99,56 +129,85 @@ class XblockContentRestrictions(StudioContainerWithNestedXBlocksMixin, StudioEdi
         data = pkg_resources.resource_string(__name__, path)
         return data.decode("utf8")
 
-    def render_restricted_student_view(self, context):
+    def author_view(self, context):
         """
-        Render the restricted student view.
+        Renders the Studio preview by rendering each child so that they can all be seen and edited.
         """
-        templates = {
-            ContentRestrictions.IP_WHITELIST.name: 'restricted_ip_whitelist.html',
-            ContentRestrictions.PASSWORD.name: 'restricted_password.html',
-            ContentRestrictions.SEB_BROWSER.name: 'restricted_seb_browser.html',
-        }
-        html = self.resource_string(f"static/html/{templates[self.restriction_type]}")
+        fragment = Fragment()
+        root_xblock = context.get("root_xblock")
+        is_root = root_xblock and root_xblock.location == self.location
+        if is_root:
+            # User has clicked the "View" link. Show a preview of all possible children:
+            self.render_children(context, fragment, can_reorder=True, can_add=True)
+        # else: When shown on a unit page, don't show any sort of preview -
+        # just the status of this block in the validation area.
+
+        return fragment
+
+    def render_restricted_student_view(self):
+        """
+        Render the restricted student view, based on the restriction type.
+
+        Returns:
+            Fragment: The rendered fragment.
+        """
+        html = self.resource_string(
+            f"static/html/{RESTRICTION_HTML_TEMPLATES[self.restriction_type]}"
+        )
         frag = Fragment(html.format(self=self))
         frag.add_css(self.resource_string("static/css/content_restrictions.css"))
 
         # Add i18n js
         statici18n_js_url = self._get_statici18n_js_url()
         if statici18n_js_url:
-            frag.add_javascript_url(self.runtime.local_resource_url(self, statici18n_js_url))
+            frag.add_javascript_url(
+                self.runtime.local_resource_url(self, statici18n_js_url)
+            )
 
-        frag.add_javascript(self.resource_string("static/js/src/content_restrictions.js"))
-        frag.initialize_js('XblockContentRestrictions')
+        frag.add_javascript(
+            self.resource_string("static/js/src/content_restrictions.js")
+        )
+        frag.initialize_js("XblockContentRestrictions")
         return frag
 
     def student_view(self, context):
         """
-        View for previewing contents in studio.
+        View for students to see the content. If the user has access to the content,
+        render the children. If not, render the restricted student view.
         """
         if not self.has_access_to_content:
-            return self.render_restricted_student_view(context)
+            return self.render_restricted_student_view()
 
         children_contents = []
         fragment = Fragment()
 
         for child_id in self.children:
             child = self.runtime.get_block(child_id)
-            child_fragment = self._render_child_fragment(child, context, 'student_view')
+            child_fragment = self._render_child_fragment(child, context, "student_view")
             fragment.add_fragment_resources(child_fragment)
             children_contents.append(child_fragment.content)
 
         render_context = {
-            'block': self,
-            'children_contents': children_contents,
+            "block": self,
+            "children_contents": children_contents,
         }
         render_context.update(context)
-        fragment.add_content(self.loader.render_django_template(self.CHILD_PREVIEW_TEMPLATE, render_context))
+        fragment.add_content(
+            self.loader.render_django_template(
+                self.CHILD_PREVIEW_TEMPLATE, render_context
+            )
+        )
         return fragment
 
     @property
     def has_access_to_content(self):
         """
         Check if the user has access to the content.
+
+        - If the restriction type is NO_RESTRICTION, the user will always have access.
+        - If the restriction type is PASSWORD, check if the user has entered the correct password.
+        - If the restriction type is IP_WHITELIST, check if the user's IP address is in the whitelist.
+        - If the restriction type is SEB_BROWSER, check if the user has access based on the browser used.
         """
         if self.restriction_type == ContentRestrictions.NO_RESTRICTION.name:
             return True
@@ -166,10 +225,13 @@ class XblockContentRestrictions(StudioContainerWithNestedXBlocksMixin, StudioEdi
 
     def has_access_with_ip_whitelist(self, request):
         """
-        Check if the user is in the IP whitelist.
+        Check if the client IP is in the IP whitelist.
+
+        Returns:
+            bool: True if the IP is in the whitelist, False otherwise.
         """
         client_ips = ip.get_all_client_ips(request)
-        whitelist = self.ip_whitelist.split(',')
+        whitelist = self.ip_whitelist.split(",")
         return any(ip in whitelist for ip in client_ips)
 
     def has_access_with_seb_browser(self, request, username, course_key):
@@ -190,16 +252,22 @@ class XblockContentRestrictions(StudioContainerWithNestedXBlocksMixin, StudioEdi
         return access_granted
 
     @XBlock.json_handler
-    def has_access_with_password(self, data, suffix=''):
+    def has_access_with_password(self, data, suffix=""):
         """
         Check if the user has the correct password.
+
+        Args:
+            data: The data sent by the client.
+
+        Returns:
+            dict: The result of the check.
         """
-        self.user_provided_password = data.get('password')
-        if data.get('password') == self.password:
-            return {'success': True}
+        self.user_provided_password = data.get("password")
+        if data.get("password") == self.password:
+            return {"success": True}
         return {
-            'success': False,
-            'error_message': 'Incorrect password.',
+            "success": False,
+            "error_message": "Incorrect password.",
         }
 
     # TO-DO: change this to create the scenarios you'd like to see in the
@@ -219,21 +287,6 @@ class XblockContentRestrictions(StudioContainerWithNestedXBlocksMixin, StudioEdi
                 </vertical_demo>
              """),
         ]
-
-    def author_view(self, context):
-        """
-        Renders the Studio preview by rendering each child so that they can all be seen and edited.
-        """
-        fragment = Fragment()
-        root_xblock = context.get('root_xblock')
-        is_root = root_xblock and root_xblock.location == self.location
-        if is_root:
-            # User has clicked the "View" link. Show a preview of all possible children:
-            self.render_children(context, fragment, can_reorder=True, can_add=True)
-        # else: When shown on a unit page, don't show any sort of preview -
-        # just the status of this block in the validation area.
-
-        return fragment
 
     @staticmethod
     def _get_statici18n_js_url():
