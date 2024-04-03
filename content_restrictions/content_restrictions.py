@@ -106,7 +106,8 @@ class XblockContentRestrictions(
         scope=Scope.settings,
         help=_(
             """Password required to access the content. If the learner does not enter the correct password, they will not
-        have access to the content. If the Password restriction is not selected, this field will be ignored.
+        have access to the content. If the Password restriction is not selected, this field will be ignored. If the
+        password changes, learners will need to enter the new password to access the content.
          """
         ),
     )
