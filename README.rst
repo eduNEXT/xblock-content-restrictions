@@ -33,10 +33,10 @@ From Studio, you can add the Content Restrictions Component to a course unit.
 
 There are four restriction options that can be applied to the content:
 
-**No Restriction**: The content is always available.
-**IP Whitelist**: The content is only available to users with an IP address that matches the specified list. For this restriction, you need to specify a list of IP addresses.
-**Password**: The content is only available to users who enter the specified password. For this restriction, you need to specify a password.
-**Secure Exam Browser (SEB)**: The content is only available to users who access the course using the Secure Exam Browser.
+- **No Restriction**: The content is always available.
+- **IP Whitelist**: The content is only available to users with an IP address that matches the specified list. For this restriction, you need to specify a list of IP addresses.
+- **Password**: The content is only available to users who enter the specified password. For this restriction, you need to specify a password.
+- **Secure Exam Browser (SEB)**: The content is only available to users who access the course using the Secure Exam Browser.
 
 These restrictions are applied to the children of the Content Restrictions component. So in the Author View, you can add
 any other component as a child of the Content Restrictions component, and the restrictions will be applied to that component.
