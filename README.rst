@@ -16,7 +16,7 @@ Enabling the XBlock in a course
 Once the XBlock has been installed in your Open edX installation, you can enable it in a course from Studio
 through the **Advanced Settings**.
 
-1. Go to Studio and open the course you want to add the XBlock to.
+1. Go to Studio and open the course to which you want to add the XBlock.
 2. Go to **Settings** > **Advanced Settings** from the top menu.
 3. Search for **Advanced Module List** and add ``"content_restrictions"`` to the list.
 4. Click **Save Changes** button.
@@ -31,22 +31,22 @@ From Studio, you can add the Content Restrictions Component to a course unit.
 2. Select **Content Restrictions** from the list.
 3. Configure the component as needed.
 
-There are four restriction options that can be applied to the content:
+Four restriction options can be applied to the content:
 
 - **No Restriction**: The content is always available.
 - **IP Whitelist**: The content is only available to users with an IP address that matches the specified list. For this restriction, you need to specify a list of IP addresses.
 - **Password**: The content is only available to users who enter the specified password. For this restriction, you need to specify a password.
 - **Secure Exam Browser (SEB)**: The content is only available to users who access the course using the Secure Exam Browser.
 
-These restrictions are applied to the children of the Content Restrictions component. So in the Author View, you can add
-any other component as a child of the Content Restrictions component, and the restrictions will be applied to that component.
+These restrictions are applied to children in the Content Restrictions component. So in the Author View, you can add
+any other component as a child of the Content Restrictions component and the restrictions will be applied to that component.
 
 
 View from the Learning Management System (LMS)
 **********************************************
 
 When a learner accesses the course, the Content Restrictions component will be displayed as a message indicating the
-restriction that applies to the content and the action that the learner needs to take to access the content.
+restriction that applies to the content and the action the learner needs to take to access the content.
 
 Experimenting with this XBlock in the Workbench
 ************************************************
