@@ -15,6 +15,7 @@ from xmodule.capa_block import ProblemBlock
 from openassessment.xblock.openassessmentblock import OpenAssessmentBlock
 from xblock.utils.resources import ResourceLoader
 from edx_django_utils import ip
+from crum import get_current_request
 
 
 # Make '_' a no-op so we can scrape strings
@@ -83,11 +84,10 @@ class XblockContentRestrictions(StudioContainerWithNestedXBlocksMixin, StudioEdi
         help=_("Password required to access the content."),
     )
 
-    access_granted = Boolean(
-        display_name=_("Access Granted"),
+    user_provided_password = String(
+        display_name=_("Password"),
         scope=Scope.user_state,
-        default=False,
-        help=_("Flag to determine if the user has access to the content."),
+        help=_("Password provided by the user to access the content."),
     )
 
     editable_fields = [
@@ -156,12 +156,12 @@ class XblockContentRestrictions(StudioContainerWithNestedXBlocksMixin, StudioEdi
         if self.restriction_type == ContentRestrictions.NO_RESTRICTION.name:
             return True
         if self.restriction_type == ContentRestrictions.PASSWORD.name:
-            return self.access_granted
+            return bool(self.user_provided_password == self.password)
         if self.restriction_type == ContentRestrictions.IP_WHITELIST.name:
-            return self.has_access_with_ip_whitelist(self.runtime.request)
+            return self.has_access_with_ip_whitelist(get_current_request())
         elif self.restriction_type == ContentRestrictions.SEB_BROWSER.name:
             return self.has_access_with_seb_browser(
-                self.runtime.request,
+                get_current_request(),
                 self.runtime.user_id,
                 self.course_id,
             )
@@ -199,8 +199,8 @@ class XblockContentRestrictions(StudioContainerWithNestedXBlocksMixin, StudioEdi
         """
         Check if the user has the correct password.
         """
+        self.user_provided_password = data.get('password')
         if data.get('password') == self.password:
-            self.access_granted = True
             return {'success': True}
         return {'success': False}
 
