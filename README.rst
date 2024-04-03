@@ -1,151 +1,141 @@
-Used when course designers need to control the conditions under which a learner can access the contents of a subsection.
-#############################
+Content Restrictions XBlock
+############################
 
-Testing with Docker
-********************
+|status-badge| |license-badge| |ci-badge|
 
-This XBlock comes with a Docker test environment ready to build, based on the xblock-sdk workbench. To build and run it::
 
-    $ make dev.run
+Purpose
+*******
 
-The XBlock SDK Workbench, including this XBlock, will be available on the list of XBlocks at http://localhost:8000
+Used when course designers need to control the conditions under which a learner can access the contents of a course.
 
-Translating
+
+Enabling the XBlock in a course
+*******************************
+
+Once the XBlock has been installed in your Open edX installation, you can enable it in a course from Studio
+through the **Advanced Settings**.
+
+1. Go to Studio and open the course you want to add the XBlock to.
+2. Go to **Settings** > **Advanced Settings** from the top menu.
+3. Search for **Advanced Module List** and add ``"content_restrictions"`` to the list.
+4. Click **Save Changes** button.
+
+
+Adding a Content Restrictions Component to a course unit
+********************************************************
+
+From Studio, you can add the Content Restrictions Component to a course unit.
+
+1. Click on the **Advanced** button in **Add New Component**.
+2. Select **Content Restrictions** from the list.
+3. Configure the component as needed.
+
+There are four restriction options that can be applied to the content:
+
+**No Restriction**: The content is always available.
+**IP Whitelist**: The content is only available to users with an IP address that matches the specified list. For this restriction, you need to specify a list of IP addresses.
+**Password**: The content is only available to users who enter the specified password. For this restriction, you need to specify a password.
+**Secure Exam Browser (SEB)**: The content is only available to users who access the course using the Secure Exam Browser.
+
+These restrictions are applied to the children of the Content Restrictions component. So in the Author View, you can add
+any other component as a child of the Content Restrictions component, and the restrictions will be applied to that component.
+
+
+View from the Learning Management System (LMS)
+**********************************************
+
+When a learner accesses the course, the Content Restrictions component will be displayed as a message indicating the
+restriction that applies to the content and the action that the learner needs to take to access the content.
+
+Experimenting with this XBlock in the Workbench
+************************************************
+
+`XBlock`_ is the Open edX component architecture for building custom learning
+interactive components.
+
+.. _XBlock: https://openedx.org/r/xblock
+
+You can see the Content Restrictions component in action in the XBlock Workbench.
+Running the Workbench requires having docker running.
+
+.. code:: bash
+
+    git clone git@github.com:eduNEXT/xblock-content-restrictions
+    virtualenv venv/
+    source venv/bin/activate
+    cd xblock-content-restrictions
+    make upgrade
+    make install
+    make dev.run
+
+Once the process is done, you can interact with the Content Restrictions XBlock in
+the Workbench by navigating to http://localhost:8000
+
+For details regarding how to deploy this or any other XBlock in the Open edX
+platform, see the `installing-the-xblock`_ documentation.
+
+.. _installing-the-xblock: https://edx.readthedocs.io/projects/xblock-tutorial/en/latest/edx_platform/devstack.html#installing-the-xblock
+
+
+Getting Help
 *************
 
-Internationalization (i18n) is when a program is made aware of multiple languages.
-Localization (l10n) is adapting a program to local language and cultural habits.
+If you're having trouble, the Open edX community has active discussion forums
+available at https://discuss.openedx.org where you can connect with others in
+the community.
 
-Use the locale directory to provide internationalized strings for your XBlock project.
-For more information on how to enable translations, visit the
-`Open edX XBlock tutorial on Internationalization <https://edx.readthedocs.org/projects/xblock-tutorial/en/latest/edx_platform/edx_lms.html>`_.
+Also, real-time conversations are always happening on the Open edX community
+Slack channel. You can request a `Slack invitation`_, then join the
+`community Slack workspace`_.
 
-This cookiecutter template uses `django-statici18n <https://django-statici18n.readthedocs.io/en/latest/>`_
-to provide translations to static javascript using ``gettext``.
+For anything non-trivial, the best path is to open an `issue`_ in this
+repository with as many details about the issue you are facing as you can
+provide.
 
-The included Makefile contains targets for extracting, compiling and validating translatable strings.
-The general steps to provide multilingual messages for a Python program (or an XBlock) are:
+For more information about these options, see the `Getting Help`_ page.
 
-1. Mark translatable strings.
-2. Run i18n tools to create raw message catalogs.
-3. Create language specific translations for each message in the catalogs.
-4. Use ``gettext`` to translate strings.
-
-1. Mark translatable strings
-=============================
-
-Mark translatable strings in python::
+.. _Slack invitation: https://openedx.org/slack
+.. _community Slack workspace: https://openedx.slack.com/
+.. _issue: https://github.com/eduNEXT/xblock-content-restrictions/issues
+.. _Getting Help: https://openedx.org/getting-help
 
 
-    from django.utils.translation import ugettext as _
+License
+*******
 
-    # Translators: This comment will appear in the `.po` file.
-    message = _("This will be marked.")
+The code in this repository is licensed under the AGPL-3.0 unless otherwise
+noted.
 
-See `edx-developer-guide <https://edx.readthedocs.io/projects/edx-developer-guide/en/latest/internationalization/i18n.html#python-source-code>`__
-for more information.
-
-You can also use ``gettext`` to mark strings in javascript::
+Please see `LICENSE.txt <LICENSE.txt>`_ for details.
 
 
-    // Translators: This comment will appear in the `.po` file.
-    var message = gettext("Custom message.");
+Contributing
+************
 
-See `edx-developer-guide <https://edx.readthedocs.io/projects/edx-developer-guide/en/latest/internationalization/i18n.html#javascript-files>`__
-for more information.
+Contributions are very welcome.
 
-2. Run i18n tools to create Raw message catalogs
-=================================================
-
-This cookiecutter template offers multiple make targets which are shortcuts to
-use `edx-i18n-tools <https://github.com/openedx/i18n-tools>`_.
-
-After marking strings as translatable we have to create the raw message catalogs.
-These catalogs are created in ``.po`` files. For more information see
-`GNU PO file documentation <https://www.gnu.org/software/gettext/manual/html_node/PO-Files.html>`_.
-These catalogs can be created by running::
+This project is currently accepting all types of contributions, bug fixes,
+security fixes, maintenance work, or new features.  However, please make sure
+to have a discussion about your new feature idea with the maintainers prior to
+beginning development to maximize the chances of your change being accepted.
+You can start a conversation by creating a new issue on this repo summarizing
+your idea.
 
 
-    $ make extract_translations
+Reporting Security Issues
+*************************
 
-The previous command will create the necessary ``.po`` files under
-``xblock-content-restrictions/content_restrictions/conf/locale/en/LC_MESSAGES/text.po``.
-The ``text.po`` file is created from the ``django-partial.po`` file created by
-``django-admin makemessages`` (`makemessages documentation <https://docs.djangoproject.com/en/3.2/topics/i18n/translation/#message-files>`_),
-this is why you will not see a ``django-partial.po`` file.
+Please do not report a potential security issue in public. Please email
+security@edunext.co.
 
-3. Create language specific translations
-==============================================
 
-3.1 Add translated strings
----------------------------
+.. |ci-badge| image:: https://github.com/eduNEXT/xblock-content-restrictions/workflows/Python%20CI/badge.svg?branch=main
+    :target: https://github.com/eduNEXT/xblock-content-restrictions/actions
+    :alt: CI
 
-After creating the raw message catalogs, all translations should be filled out by the translator.
-One or more translators must edit the entries created in the message catalog, i.e. the ``.po`` file(s).
-The format of each entry is as follows::
+.. |license-badge| image:: https://img.shields.io/github/license/eduNEXT/xblock-content-restrictions.svg
+    :target: https://github.com/eduNEXT/xblock-content-restrictions/blob/main/LICENSE.txt
+    :alt: License
 
-    #  translator-comments
-    A. extracted-comments
-    #: reference…
-    #, flag…
-    #| msgid previous-untranslated-string
-    msgid 'untranslated message'
-    msgstr 'mensaje traducido (translated message)'
-
-For more information see
-`GNU PO file documentation <https://www.gnu.org/software/gettext/manual/html_node/PO-Files.html>`_.
-
-To use translations from transifex use the follow Make target to pull translations::
-
-    $ make pull_translations
-
-See `config instructions <https://github.com/openedx/i18n-tools#transifex-commands>`_ for information on how to set up your
-transifex credentials.
-
-See `transifex documentation <https://docs.transifex.com/integrations/django>`_ for more details about integrating
-django with transiflex.
-
-3.2 Compile translations
--------------------------
-
-Once translations are in place, use the following Make target to compile the translation catalogs ``.po`` into
-``.mo`` message files::
-
-    $ make compile_translations
-
-The previous command will compile ``.po`` files using
-``django-admin compilemessages`` (`compilemessages documentation <https://docs.djangoproject.com/en/3.2/topics/i18n/translation/#compiling-message-files>`_).
-After compiling the ``.po`` file(s), ``django-statici18n`` is used to create language specific catalogs. See
-``django-statici18n`` `documentation <https://django-statici18n.readthedocs.io/en/latest/>`_ for more information.
-
-To upload translations to transiflex use the follow Make target::
-
-    $ make push_translations
-
-See `config instructions <https://github.com/openedx/i18n-tools#transifex-commands>`_ for information on how to set up your
-transifex credentials.
-
-See `transifex documentation <https://docs.transifex.com/integrations/django>`_ for more details about integrating
-django with transiflex.
-
- **Note:** The ``dev.run`` make target will automatically compile any translations.
-
- **Note:** To check if the source translation files (``.po``) are up-to-date run::
-
-     $ make detect_changed_source_translations
-
-4. Use ``gettext`` to translate strings
-========================================
-
-Django will automatically use ``gettext`` and the compiled translations to translate strings.
-
-Troubleshooting
-****************
-
-If there are any errors compiling ``.po`` files run the following command to validate your ``.po`` files::
-
-    $ make validate
-
-See `django's i18n troubleshooting documentation
-<https://docs.djangoproject.com/en/3.2/topics/i18n/translation/#troubleshooting-gettext-incorrectly-detects-python-format-in-strings-with-percent-signs>`_
-for more information.
+.. |status-badge| image:: https://img.shields.io/badge/Status-Maintained-brightgreen
