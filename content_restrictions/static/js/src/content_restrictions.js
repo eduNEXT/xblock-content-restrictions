@@ -9,7 +9,7 @@ function XblockContentRestrictions(runtime, element) {
         }
         $.post(handlerUrl, JSON.stringify(data)).done(function(response) {
             if (response.success) {
-                window.location = window.location.href;
+                window.location.reload(false);
             }
             else {
                 $(element).find('.error-message').text(response.error_message);
