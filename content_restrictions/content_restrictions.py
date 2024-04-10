@@ -20,7 +20,7 @@ except ModuleNotFoundError:
 
 # Make '_' a no-op so we can scrape strings
 _ = lambda text: text
-loader = ResourceLoader(__name__)
+LOCAL_RESOURCE_LOADER = ResourceLoader(__name__)
 LOG = logging.getLogger(__name__)
 
 
@@ -84,8 +84,8 @@ class XblockContentRestrictions(
         }
         render_context.update(context)
         fragment.add_content(
-            self.loader.render_django_template(
-                self.CHILD_PREVIEW_TEMPLATE, render_context
+            LOCAL_RESOURCE_LOADER.render_django_template(
+                "static/html/content_restrictions.html", render_context
             )
         )
         return fragment
