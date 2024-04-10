@@ -1,15 +1,11 @@
 """XBlock for content restrictions."""
 
 import logging
-from enum import Enum
 
 import pkg_resources
-from crum import get_current_request
 from django.utils import translation
-from edx_django_utils import ip
 from xblock.core import XBlock
 from xblock.fields import Scope, String
-from xblock.fragment import Fragment
 from xblock.utils.resources import ResourceLoader
 from xblock.utils.studio_editable import (
     StudioContainerWithNestedXBlocksMixin,
@@ -18,40 +14,14 @@ from xblock.utils.studio_editable import (
 from xblockutils.resources import ResourceLoader
 
 try:
-    from seb_openedx.permissions import get_enabled_permission_classes
-except ImportError:
-
-    def get_enabled_permission_classes(course_key):
-        return []
-
+    from xblock.fragment import Fragment
+except ModuleNotFoundError:
+    from web_fragments.fragment import Fragment
 
 # Make '_' a no-op so we can scrape strings
 _ = lambda text: text
 loader = ResourceLoader(__name__)
 LOG = logging.getLogger(__name__)
-
-
-class ContentRestrictions(Enum):
-    """
-    Enum for content restrictions.
-
-    NO_RESTRICTION: No restriction is applied to the content.
-    IP_WHITELIST: Only learners with IP addresses in the whitelist will have access to the content.
-    PASSWORD: Learners will need to enter a password to access the content.
-    SEB_BROWSER: Learners will need to access the content using the Safe Exam Browser.
-    """
-
-    NO_RESTRICTION = "No Restriction"
-    IP_WHITELIST = "IP Whitelist"
-    PASSWORD = "Password"
-    SEB_BROWSER = "Secure Exam Browser (SEB)"
-
-
-RESTRICTION_HTML_TEMPLATES = {
-    ContentRestrictions.IP_WHITELIST.name: "restricted_ip_whitelist.html",
-    ContentRestrictions.PASSWORD.name: "restricted_password.html",
-    ContentRestrictions.SEB_BROWSER.name: "restricted_seb_browser.html",
-}
 
 
 class XblockContentRestrictions(
@@ -70,59 +40,8 @@ class XblockContentRestrictions(
         default=_("Content Restrictions"),
     )
 
-    restriction_type = String(
-        display_name=_("Restriction Type"),
-        scope=Scope.settings,
-        default="NO_RESTRICTION",
-        values=[
-            {
-                "display_name": restriction_type.value,
-                "value": restriction_type.name,
-            }
-            for restriction_type in ContentRestrictions
-        ],
-        help=_(
-            """Type of restriction to apply to learners. If no restriction is selected, all learners will have access to
-        the content. If IP Whitelist is selected, only learners with IP addresses in the whitelist will have access to
-        the content. If Password is selected, learners will need to enter a password to access the content. If SEB
-        Browser is selected, learners will need to access the content using the Safe Exam Browser.
-        """
-        ),
-    )
-
-    ip_whitelist = String(
-        display_name=_("IP Whitelist"),
-        scope=Scope.settings,
-        help=_(
-            """List of IP addresses that can access the content. Use commas to separate multiple IP addresses. If the
-        learner's IP address is not in the whitelist, they will not have access to the content. If the IP Whitelist
-        restriction is not selected, this field will be ignored.
-          """
-        ),
-    )
-
-    password = String(
-        display_name=_("Password"),
-        scope=Scope.settings,
-        help=_(
-            """Password required to access the content. If the learner does not enter the correct password, they will not
-        have access to the content. If the Password restriction is not selected, this field will be ignored. If the
-        password changes, learners will need to enter the new password to access the content.
-         """
-        ),
-    )
-
-    user_provided_password = String(
-        display_name=_("Password"),
-        scope=Scope.user_state,
-        help=_("Password provided by the user to access the content."),
-    )
-
     editable_fields = [
         "display_name",
-        "restriction_type",
-        "ip_whitelist",
-        "password",
     ]
 
     def resource_string(self, path):
@@ -145,40 +64,11 @@ class XblockContentRestrictions(
 
         return fragment
 
-    def render_restricted_student_view(self):
-        """
-        Render the restricted student view, based on the restriction type.
-
-        Returns:
-            Fragment: The rendered fragment.
-        """
-        html = self.resource_string(
-            f"static/html/{RESTRICTION_HTML_TEMPLATES[self.restriction_type]}"
-        )
-        frag = Fragment(html.format(self=self))
-        frag.add_css(self.resource_string("static/css/content_restrictions.css"))
-
-        # Add i18n js
-        statici18n_js_url = self._get_statici18n_js_url()
-        if statici18n_js_url:
-            frag.add_javascript_url(
-                self.runtime.local_resource_url(self, statici18n_js_url)
-            )
-
-        frag.add_javascript(
-            self.resource_string("static/js/src/content_restrictions.js")
-        )
-        frag.initialize_js("XblockContentRestrictions")
-        return frag
-
     def student_view(self, context):
         """
         View for students to see the content. If the user has access to the content,
         render the children. If not, render the restricted student view.
         """
-        if not self.has_access_to_content:
-            return self.render_restricted_student_view()
-
         children_contents = []
         fragment = Fragment()
 
@@ -199,77 +89,6 @@ class XblockContentRestrictions(
             )
         )
         return fragment
-
-    @property
-    def has_access_to_content(self):
-        """
-        Check if the user has access to the content.
-
-        - If the restriction type is NO_RESTRICTION, the user will always have access.
-        - If the restriction type is PASSWORD, check if the user has entered the correct password.
-        - If the restriction type is IP_WHITELIST, check if the user's IP address is in the whitelist.
-        - If the restriction type is SEB_BROWSER, check if the user has access based on the browser used.
-        """
-        if self.restriction_type == ContentRestrictions.NO_RESTRICTION.name:
-            return True
-        if self.restriction_type == ContentRestrictions.PASSWORD.name:
-            return bool(self.user_provided_password == self.password)
-        if self.restriction_type == ContentRestrictions.IP_WHITELIST.name:
-            return self.has_access_with_ip_whitelist(get_current_request())
-        elif self.restriction_type == ContentRestrictions.SEB_BROWSER.name:
-            return self.has_access_with_seb_browser(
-                get_current_request(),
-                self.runtime.user_id,
-                self.course_id,
-            )
-        return True
-
-    def has_access_with_ip_whitelist(self, request):
-        """
-        Check if the client IP is in the IP whitelist.
-
-        Returns:
-            bool: True if the IP is in the whitelist, False otherwise.
-        """
-        client_ips = ip.get_all_client_ips(request)
-        whitelist = self.ip_whitelist.split(",")
-        return any(ip in whitelist for ip in client_ips)
-
-    def has_access_with_seb_browser(self, request, username, course_key):
-        """
-        Check if the user has access to the content based on the browser used.
-
-        Returns:
-            bool: True if the user has access, False otherwise.
-        """
-        access_granted = False
-
-        for permission in get_enabled_permission_classes(course_key):
-            if permission().check(request, course_key):
-                access_granted = True
-            else:
-                LOG.info("Permission: %s denied for: %s.", permission, username)
-
-        return access_granted
-
-    @XBlock.json_handler
-    def has_access_with_password(self, data, suffix=""):
-        """
-        Check if the user has the correct password.
-
-        Args:
-            data: The data sent by the client.
-
-        Returns:
-            dict: The result of the check.
-        """
-        self.user_provided_password = data.get("password")
-        if data.get("password") == self.password:
-            return {"success": True}
-        return {
-            "success": False,
-            "error_message": "Incorrect password.",
-        }
 
     # TO-DO: change this to create the scenarios you'd like to see in the
     # workbench while developing your XBlock.
