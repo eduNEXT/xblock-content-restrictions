@@ -85,7 +85,7 @@ class XblockContentRestrictions(
         render_context.update(context)
         fragment.add_content(
             LOCAL_RESOURCE_LOADER.render_django_template(
-                "static/html/content_restrictions.html", render_context
+                "static/html/children.html", render_context
             )
         )
         return fragment
