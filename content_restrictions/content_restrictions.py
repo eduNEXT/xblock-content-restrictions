@@ -1,16 +1,10 @@
 """XBlock for content restrictions."""
-
-import logging
-
 import pkg_resources
 from django.utils import translation
 from xblock.core import XBlock
 from xblock.fields import Scope, String
 from xblock.utils.resources import ResourceLoader
-from xblock.utils.studio_editable import (
-    StudioContainerWithNestedXBlocksMixin,
-    StudioEditableXBlockMixin,
-)
+from xblock.utils.studio_editable import StudioContainerWithNestedXBlocksMixin, StudioEditableXBlockMixin
 from xblockutils.resources import ResourceLoader
 
 try:
@@ -21,7 +15,6 @@ except ModuleNotFoundError:
 # Make '_' a no-op so we can scrape strings
 _ = lambda text: text
 LOCAL_RESOURCE_LOADER = ResourceLoader(__name__)
-LOG = logging.getLogger(__name__)
 
 
 class XblockContentRestrictions(
@@ -43,11 +36,6 @@ class XblockContentRestrictions(
     editable_fields = [
         "display_name",
     ]
-
-    def resource_string(self, path):
-        """Handy helper for getting resources from our kit."""
-        data = pkg_resources.resource_string(__name__, path)
-        return data.decode("utf8")
 
     def author_view(self, context):
         """
@@ -93,7 +81,7 @@ class XblockContentRestrictions(
     # TO-DO: change this to create the scenarios you'd like to see in the
     # workbench while developing your XBlock.
     @staticmethod
-    def workbench_scenarios():
+    def workbench_scenarios():  # pragma: no cover
         """Create canned scenario for display in the workbench."""
         return [
             ("XblockContentRestrictions",
@@ -109,7 +97,7 @@ class XblockContentRestrictions(
         ]
 
     @staticmethod
-    def _get_statici18n_js_url():
+    def _get_statici18n_js_url():  # pragma: no cover
         """
         Return the Javascript translation file for the currently selected language, if any.
 
