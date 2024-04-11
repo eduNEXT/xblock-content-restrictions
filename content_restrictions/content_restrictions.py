@@ -5,16 +5,18 @@ from xblock.core import XBlock
 from xblock.fields import Scope, String
 from xblock.utils.resources import ResourceLoader
 from xblock.utils.studio_editable import StudioContainerWithNestedXBlocksMixin, StudioEditableXBlockMixin
-from xblockutils.resources import ResourceLoader
 
 try:
     from xblock.fragment import Fragment
 except ModuleNotFoundError:
     from web_fragments.fragment import Fragment
 
-# Make '_' a no-op so we can scrape strings
-_ = lambda text: text
 LOCAL_RESOURCE_LOADER = ResourceLoader(__name__)
+
+
+def _(text):
+    """Make '_' a no-op so we can scrape strings."""
+    return text
 
 
 class XblockContentRestrictions(
