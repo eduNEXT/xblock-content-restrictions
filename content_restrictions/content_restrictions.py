@@ -41,7 +41,7 @@ class XblockContentRestrictions(
 
     def author_view(self, context):
         """
-        Renders the Studio preview by rendering each child so that they can all be seen and edited.
+        Render the Studio preview by rendering each child so that they can all be seen and edited.
         """
         fragment = Fragment()
         root_xblock = context.get("root_xblock")
@@ -56,8 +56,7 @@ class XblockContentRestrictions(
 
     def student_view(self, context):
         """
-        View for students to see the content. If the user has access to the content,
-        render the children. If not, render the restricted student view.
+        View for students to see the blocks in the unit.
         """
         children_contents = []
         fragment = Fragment()
