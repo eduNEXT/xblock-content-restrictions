@@ -2,7 +2,7 @@
 import pkg_resources
 from django.utils import translation
 from xblock.core import XBlock
-from xblock.fields import Scope, String
+from xblock.fields import Scope, String, Boolean
 from xblock.utils.resources import ResourceLoader
 from xblock.utils.studio_editable import StudioContainerWithNestedXBlocksMixin, StudioEditableXBlockMixin
 
@@ -32,12 +32,66 @@ class XblockContentRestrictions(
         display_name=_("Display Name"),
         help=_("The display name for this component."),
         scope=Scope.settings,
-        default=_("Content Restrictions"),
+        default=_("Content With Access Restrictions"),
+    )
+
+    password_restriction = Boolean(
+        display_name=_("Password Restriction"),
+        help=_("When enabled, the content will be restricted by password."),
+        scope=Scope.settings,
+        default=False,
+    )
+
+    password_explanation_text = String(
+        display_name=_("Password Explanatory Message"),
+        help=_("This message will be shown when the learner is prompted to enter the password."),
+        scope=Scope.settings,
+        default=_("Please enter the password to access this content."),
+    )
+
+    incorrect_password_explanation_text = String(
+        display_name=_("Incorrect Password Explanatory Message"),
+        help=_(
+            """This message will be shown when the learner enters an incorrect password."""
+        ),
+        scope=Scope.settings,
+        default=_("Incorrect password. Please try again."),
+    )
+
+    password = String(
+        display_name=_("Password"),
+        help=_(
+            """Learners will need to type this password to access the content of the xblock. If the learner"""
+            """ does not type the correct password, they will not have access to the content and will get an"""
+            """ explanatory message instead. If the password is changed after the learner has already accessed"""
+            """ the content, the learner will need to type the new password to access the content."""
+        ),
+        scope=Scope.settings,
+        default="",
+    )
+
+    user_provided_password = String(
+        display_name=_("User Provided Password"),
+        help=_(
+            """The password that the user has provided. This is used to check if the user has entered the"""
+            """ correct password."""
+        ),
+        scope=Scope.user_state,
+        default="",
     )
 
     editable_fields = [
         "display_name",
+        "password_restriction",
+        "password_explanation_text",
+        "incorrect_password_explanation_text",
+        "password",
     ]
+
+    def resource_string(self, path):
+        """Handy helper for getting resources from our kit."""
+        data = pkg_resources.resource_string(__name__, path)
+        return data.decode("utf8")
 
     def author_view(self, context):
         """
@@ -61,6 +115,9 @@ class XblockContentRestrictions(
         children_contents = []
         fragment = Fragment()
 
+        if not self.has_access_to_content:
+            return self.render_restricted_student_view()
+
         for child_id in self.children:
             child = self.runtime.get_block(child_id)
             child_fragment = self._render_child_fragment(child, context, "student_view")
@@ -78,6 +135,64 @@ class XblockContentRestrictions(
             )
         )
         return fragment
+
+    @property
+    def has_access_to_content(self):
+        """
+        Check if the user has access to the content.
+
+        - If password restriction is enabled, check if the user has entered the correct password.
+        """
+        if self.password_restriction:
+            return bool(self.user_provided_password == self.password)
+        return True
+
+    def render_restricted_student_view(self):
+        """
+        Render the restricted student view, based on the restriction type.
+
+        Returns:
+            Fragment: The rendered fragment.
+        """
+        fragment = Fragment()
+        fragment.add_content(
+            LOCAL_RESOURCE_LOADER.render_django_template(
+                "static/html/password_restriction.html", {"block": self}
+            )
+        )
+        fragment.add_css(self.resource_string("static/css/content_restrictions.css"))
+
+        # Add i18n js
+        statici18n_js_url = self._get_statici18n_js_url()
+        if statici18n_js_url:
+            fragment.add_javascript_url(
+                self.runtime.local_resource_url(self, statici18n_js_url)
+            )
+
+        fragment.add_javascript(
+            self.resource_string("static/js/src/content_restrictions.js")
+        )
+        fragment.initialize_js("XblockContentRestrictions")
+        return fragment
+
+    @XBlock.json_handler
+    def has_access_with_password(self, data, suffix=""):
+        """
+        Check if the user has the correct password.
+        Args:
+            data: The data sent by the client.
+        Returns:
+            dict: The result of the check.
+        """
+        self.user_provided_password = data.get("password")
+        if self.user_provided_password == self.password:
+            return {
+                "success": True,
+            }
+        return {
+            "success": False,
+            "error_message": self.incorrect_password_explanation_text,
+        }
 
     # TO-DO: change this to create the scenarios you'd like to see in the
     # workbench while developing your XBlock.

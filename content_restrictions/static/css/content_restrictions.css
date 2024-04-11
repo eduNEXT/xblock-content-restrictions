@@ -1,9 +1,6 @@
 /* CSS for XblockContentRestrictions */
 
-.content_restrictions_block .count {
-    font-weight: bold;
-}
-
-.content_restrictions_block p {
-    cursor: pointer;
+.content_restrictions .password_explanation_text {
+    margin-top: 10px;
+    margin-bottom: 10px;
 }
