@@ -154,7 +154,7 @@ setup(
     author_email='technical@edunext.co',
     url='https://github.com/edunext/xblock-content-restrictions',
     packages=find_packages(
-        include=['content_restrictions', 'content_restrictions.*'],
+        include=['content_restrictions', 'content_restrictions.*', '*.html'],
         exclude=["*tests"],
     ),
 
