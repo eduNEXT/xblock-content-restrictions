@@ -3,12 +3,16 @@
 .PHONY: dev.clean dev.build dev.run upgrade help requirements
 .PHONY: extract_translations compile_translations
 .PHONY: detect_changed_source_translations dummy_translations build_dummy_translations
-.PHONY: validate_translations pull_translations push_translations install_transifex_clients
+.PHONY: validate_translations pull_translations push_translations symlink_translations install_transifex_clients
 
 REPO_NAME := xblock-content-restrictions
 PACKAGE_NAME := content_restrictions
 EXTRACT_DIR := $(PACKAGE_NAME)/conf/locale/en/LC_MESSAGES
+EXTRACTED_DJANGO := $(EXTRACT_DIR)/django-partial.po
+EXTRACTED_DJANGOJS := $(EXTRACT_DIR)/djangojs-partial.po
+EXTRACTED_TEXT := $(EXTRACT_DIR)/text.po
 JS_TARGET := $(PACKAGE_NAME)/public/js/translations
+TRANSLATIONS_DIR := $(PACKAGE_NAME)/translations
 
 help:
 	@perl -nle'print $& if m{^[\.a-zA-Z_-]+:.*?## .*$$}' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m  %-25s\033[0m %s\n", $$1, $$2}'
@@ -41,6 +45,19 @@ piptools: ## install pinned version of pip-compile and pip-sync
 requirements: piptools ## install development environment requirements
 	pip-sync -q requirements/dev.txt requirements/private.*
 
+quality: ## run the quality checks
+	pylint --rcfile=pylintrc content-restrictions
+	python setup.py -q sdist
+	twine check dist/*
+
+test: ## run tests
+	mkdir -p var
+	rm -rf .coverage
+	python -m coverage run --rcfile=.coveragerc -m pytest
+
+covreport: ## Show the coverage results
+	python -m coverage report -m --skip-covered
+
 dev.clean:
 	-docker rm $(REPO_NAME)-dev
 	-docker rmi $(REPO_NAME)-dev
@@ -53,13 +70,14 @@ dev.run: dev.clean dev.build ## Clean, build and run test image
 
 ## Localization targets
 
-extract_translations: ## extract strings to be translated, outputting .po files
-	cd $(PACKAGE_NAME) && i18n_tool extract --no-segment --merge-po-files
-	mv $(EXTRACT_DIR)/django.po $(EXTRACT_DIR)/text.po
+extract_translations: symlink_translations ## extract strings to be translated, outputting .po files
+	cd $(PACKAGE_NAME) && i18n_tool extract
+	mv $(EXTRACTED_DJANGO) $(EXTRACTED_TEXT)
+	if [ -f "$(EXTRACTED_DJANGOJS)" ]; then cat $(EXTRACTED_DJANGOJS) >> $(EXTRACTED_TEXT); rm $(EXTRACTED_DJANGOJS); fi
 
-compile_translations: ## compile translation files, outputting .mo files for each supported language
-	cd $(PACKAGE_NAME) && i18n_tool generate
-	python manage.py compilejsi18n --namespace ContentRestrictionsI18n --output $(JS_TARGET)
+compile_translations: symlink_translations ## compile translation files, outputting .mo files for each supported language
+	cd $(PACKAGE_NAME) && i18n_tool generate -v
+	python manage.py compilejsi18n --namespace ContentRestrictionsI18N --output $(JS_TARGET)
 
 detect_changed_source_translations:
 	cd $(PACKAGE_NAME) && i18n_tool changed
@@ -77,12 +95,12 @@ pull_translations: ## pull translations from transifex
 push_translations: extract_translations ## push translations to transifex
 	cd $(PACKAGE_NAME) && i18n_tool transifex push
 
+symlink_translations:
+	if [ ! -d "$(TRANSLATIONS_DIR)" ]; then ln -s conf/locale/ $(TRANSLATIONS_DIR); fi
+
 install_transifex_client: ## Install the Transifex client
 	# Instaling client will skip CHANGELOG and LICENSE files from git changes
 	# so remind the user to commit the change first before installing client.
 	git diff -s --exit-code HEAD || { echo "Please commit changes first."; exit 1; }
 	curl -o- https://raw.githubusercontent.com/transifex/cli/master/install.sh | bash
 	git checkout -- LICENSE README.md ## overwritten by Transifex installer
-
-selfcheck: ## check that the Makefile is well-formed
-	@echo "The Makefile is well-formed."

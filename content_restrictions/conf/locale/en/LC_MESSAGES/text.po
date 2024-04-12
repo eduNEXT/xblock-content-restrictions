@@ -1,0 +1,96 @@
+# edX translation file.
+# Copyright (C) 2024 EdX
+# This file is distributed under the GNU AFFERO GENERAL PUBLIC LICENSE.
+# EdX Team <info@edx.org>, 2024.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: 0.1a\n"
+"Report-Msgid-Bugs-To: openedx-translation@googlegroups.com\n"
+"POT-Creation-Date: 2023-06-13 08:00+0000\n"
+"PO-Revision-Date: 2023-06-13 09:00+0000\n"
+"Last-Translator: \n"
+"Language-Team: openedx-translation <openedx-translation@googlegroups.com>\n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: content_restrictions.py:32
+msgid "Display Name"
+msgstr ""
+
+#: content_restrictions.py:33
+msgid "The display name for this component."
+msgstr ""
+
+#: content_restrictions.py:35
+msgid "Content With Access Restrictions"
+msgstr ""
+
+#: content_restrictions.py:39
+msgid "Password Restriction"
+msgstr ""
+
+#: content_restrictions.py:40
+msgid "When enabled, the content will be restricted by password."
+msgstr ""
+
+#: content_restrictions.py:46
+msgid "Password Explanatory Message"
+msgstr ""
+
+#: content_restrictions.py:47
+msgid ""
+"This message will be shown when the learner is prompted to enter the "
+"password."
+msgstr ""
+
+#: content_restrictions.py:49
+msgid "Please enter the password to access this content."
+msgstr ""
+
+#: content_restrictions.py:53
+msgid "Incorrect Password Explanatory Message"
+msgstr ""
+
+#: content_restrictions.py:55
+msgid ""
+"This message will be shown when the learner enters an incorrect password."
+msgstr ""
+
+#: content_restrictions.py:58 content_restrictions.py:238
+msgid "Incorrect password. Please try again."
+msgstr ""
+
+#: content_restrictions.py:62
+msgid "Password"
+msgstr ""
+
+#: content_restrictions.py:64
+msgid ""
+"Learners will need to type this password to access the content of the "
+"xblock. If the learner does not type the correct password, they will not "
+"have access to the content and will get an explanatory message instead. If "
+"the password is changed after the learner has already accessed the content, "
+"the learner will need to type the new password to access the content."
+msgstr ""
+
+#: content_restrictions.py:74
+msgid "User Provided Password"
+msgstr ""
+
+#: content_restrictions.py:76
+msgid ""
+"The password that the user has provided. This is used to check if the user "
+"has entered the correct password."
+msgstr ""
+
+#: content_restrictions.py:287
+msgid "Dummy"
+msgstr ""
+
+#: static/html/password_restriction.html:7
+msgid "Submit"
+msgstr ""
