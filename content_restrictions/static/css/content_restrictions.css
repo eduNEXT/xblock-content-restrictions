@@ -1,6 +1,8 @@
 /* CSS for XblockContentRestrictions */
 
-.content_restrictions .password_explanation_text {
+.content_restrictions .password_explanation_text,
+.incorrect_password_explanation_text
+ {
     margin-top: 10px;
     margin-bottom: 10px;
 }

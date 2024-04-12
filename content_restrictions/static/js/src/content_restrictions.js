@@ -12,7 +12,7 @@ function XblockContentRestrictions(runtime, element) {
                 window.location.reload(false);
             }
             else {
-                $(element).find('.incorrect-password-explanation-text').text(response.error_message);
+                $(element).find('.incorrect_password_explanation_text').text(response.error_message);
             }
         }
         );
