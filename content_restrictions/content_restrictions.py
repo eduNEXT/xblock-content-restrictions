@@ -2,7 +2,7 @@
 import pkg_resources
 from django.utils import translation
 from xblock.core import XBlock
-from xblock.fields import Scope, String, Boolean
+from xblock.fields import Boolean, Scope, String
 from xblock.utils.resources import ResourceLoader
 from xblock.utils.studio_editable import StudioContainerWithNestedXBlocksMixin, StudioEditableXBlockMixin
 
@@ -188,11 +188,13 @@ class XblockContentRestrictions(
         """
         if self.password_restriction:
             return "password_restriction.html"
+        return "no_access.html"
 
     @XBlock.json_handler
-    def has_access_with_password(self, data, suffix=""):
+    def has_access_with_password(self, data, suffix=""):  # pylint: disable=unused-argument
         """
         Check if the user has the correct password.
+
         Args:
             data: The data sent by the client.
         Returns:
