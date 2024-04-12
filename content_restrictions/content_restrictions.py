@@ -157,7 +157,10 @@ class XblockContentRestrictions(
         fragment = Fragment()
         fragment.add_content(
             LOCAL_RESOURCE_LOADER.render_django_template(
-                "static/html/password_restriction.html", {"block": self}
+                f"static/html/{self.restriction_template}",
+                {
+                    "block": self,
+                }
             )
         )
         fragment.add_css(self.resource_string("static/css/content_restrictions.css"))
@@ -174,6 +177,17 @@ class XblockContentRestrictions(
         )
         fragment.initialize_js("XblockContentRestrictions")
         return fragment
+
+    @property
+    def restriction_template(self):
+        """
+        Get the current restriction template.
+
+        Returns:
+            str: The current restriction template.
+        """
+        if self.password_restriction:
+            return "password_restriction.html"
 
     @XBlock.json_handler
     def has_access_with_password(self, data, suffix=""):
