@@ -113,13 +113,6 @@ class XblockContentRestrictions(
         """
         Render a form for editing this XBlock with translations.
         """
-        if self.service_declaration("i18n"):
-            ugettext = self.ugettext
-        else:
-            def ugettext(text):
-                """Get dummy ugettext method that doesn't do anything."""
-                return text
-
         fragment = Fragment()
         context = {'fields': []}
         # Build a list of all the fields that can be edited:
@@ -133,7 +126,6 @@ class XblockContentRestrictions(
             field_info = self._make_field_info(field_name, field)
             if field_info is not None:
                 if field_info["type"] == "string":
-                    # pylint: disable=translation-of-non-string
                     field_info["default"] = self.ugettext(field_info.get("default"))
                     field_info["value"] = self.ugettext(field_info.get("value"))
                 context["fields"].append(field_info)
