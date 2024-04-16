@@ -60,7 +60,7 @@ msgid ""
 "This message will be shown when the learner enters an incorrect password."
 msgstr "Este mensaje se mostrará cuando el estudiante introduzca una contraseña incorrecta."
 
-#: content_restrictions.py:58 content_restrictions.py:208
+#: content_restrictions.py:58 content_restrictions.py:243
 msgid "Incorrect password. Please try again."
 msgstr "Contraseña incorrecta. Por favor, inténtelo de nuevo."
 
@@ -92,7 +92,7 @@ msgid ""
 "has entered the correct password."
 msgstr ""
 
-#: content_restrictions.py:257
+#: content_restrictions.py:292
 msgid "Dummy"
 msgstr ""
 

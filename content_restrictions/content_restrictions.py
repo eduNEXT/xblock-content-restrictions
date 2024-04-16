@@ -164,7 +164,7 @@ class XblockContentRestrictions(
         render_context.update(context)
         fragment.add_content(
             LOCAL_RESOURCE_LOADER.render_django_template(
-                "static/html/children.html", render_context
+                "static/html/children.html", render_context, i18n_service=self.runtime.service(self, "i18n")
             )
         )
         return fragment
@@ -193,7 +193,8 @@ class XblockContentRestrictions(
                 f"static/html/{self.restriction_template}",
                 {
                     "block": self,
-                }
+                },
+                i18n_service=self.runtime.service(self, "i18n"),
             )
         )
         fragment.add_css(self.resource_string("static/css/content_restrictions.css"))
