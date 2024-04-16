@@ -126,8 +126,8 @@ class XblockContentRestrictions(
             field_info = self._make_field_info(field_name, field)
             if field_info is not None:
                 if field_info["type"] == "string":
-                    field_info["default"] = self.ugettext(field_info.get("default"))
-                    field_info["value"] = self.ugettext(field_info.get("value"))
+                    field_info["default"] = self.ugettext(field_info["default"]) if field_info["default"] else ""
+                    field_info["value"] = self.ugettext(field_info["value"]) if field_info["value"] else ""
                 context["fields"].append(field_info)
         fragment.content = self.loader.render_django_template('templates/studio_edit.html', context)
         fragment.add_javascript(self.loader.load_unicode('public/studio_edit.js'))
