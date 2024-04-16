@@ -52,7 +52,7 @@ class XblockContentRestrictions(
     incorrect_password_explanation_text = String(
         display_name=_("Incorrect Password Explanatory Message"),
         help=_(
-            """This message will be shown when the learner enters an incorrect password."""
+            "This message will be shown when the learner enters an incorrect password."
         ),
         scope=Scope.settings,
         default=_("Incorrect password. Please try again."),
@@ -61,10 +61,10 @@ class XblockContentRestrictions(
     password = String(
         display_name=_("Password"),
         help=_(
-            """Learners will need to type this password to access the content of the xblock. If the learner"""
-            """ does not type the correct password, they will not have access to the content and will get an"""
-            """ explanatory message instead. If the password is changed after the learner has already accessed"""
-            """ the content, the learner will need to type the new password to access the content."""
+            "Learners will need to type this password to access the content of the xblock. If the learner"
+            " does not type the correct password, they will not have access to the content and will get an"
+            " explanatory message instead. If the password is changed after the learner has already accessed"
+            " the content, the learner will need to type the new password to access the content."
         ),
         scope=Scope.settings,
         default="",
@@ -73,8 +73,8 @@ class XblockContentRestrictions(
     user_provided_password = String(
         display_name=_("User Provided Password"),
         help=_(
-            """The password that the user has provided. This is used to check if the user has entered the"""
-            """ correct password."""
+            "The password that the user has provided. This is used to check if the user has entered the"
+            " correct password."
         ),
         scope=Scope.user_state,
         default="",
