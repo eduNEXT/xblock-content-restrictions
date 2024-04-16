@@ -28,25 +28,77 @@ Adding a Content Restrictions Component to a course unit
 From Studio, you can add the Content Restrictions Component to a course unit.
 
 1. Click on the **Advanced** button in **Add New Component**.
-2. Select **Content Restrictions** from the list.
+
+   .. image:: https://github.com/eduNEXT/xblock-content-restrictions/assets/64440265/b0ee88bb-f3d3-40da-ba4d-281c3efbabb6
+      :alt: Open Advanced Components
+
+2. Select **Content With Access Restrictions** from the list.
+
+   .. image:: https://github.com/eduNEXT/xblock-content-restrictions/assets/64440265/4e191109-37ca-458a-b338-32d5b1a84cd3
+      :alt: Select Content Restrictions Component
+
 3. Configure the component as needed.
 
-Four restriction options can be applied to the content:
 
-- **No Restriction**: The content is always available.
-- **IP Whitelist**: The content is only available to users with an IP address that matches the specified list. For this restriction, you need to specify a list of IP addresses.
-- **Password**: The content is only available to users who enter the specified password. For this restriction, you need to specify a password.
-- **Secure Exam Browser (SEB)**: The content is only available to users who access the course using the Secure Exam Browser.
+View from the Learning Management System (CMS)
+**********************************************
+
+Password Restriction
+--------------------
+
+When you select the Password restriction option, you need to specify a password that the learner must enter to access the content.
+Specify the password in the **Password** field in the Content Restrictions component configuration. The password is case-sensitive.
+After publishing the unit with the Content Restrictions component, the learner will see a message indicating that the content is restricted and will be prompted to enter the password to access the content.
+When the learner enters the correct password, the content will be displayed.
+
+There are the available configuration options for the Password restriction:
+
+- **Password Restriction**: Enable or disable the password restriction. If disabled, the other configuration options will be ignored.
+- **Password**: The password that the learner must enter to access the content.
+- **Password Explanation Text**: The text that will be displayed to the learner to explain how to access the content.
+- **Incorrect Password Explanation Text**: The text that will be displayed to the learner when the entered password is incorrect.
+
+Here is how the Content Restrictions component looks in the Author View:
+
+   .. image:: https://github.com/eduNEXT/xblock-content-restrictions/assets/64440265/5f9e73d0-4def-41bd-b3ab-ffae1ec958b3
+      :alt: Author view for component
+
+When accessing the component by selecting the **view** button, you will see the list of children components that are restricted by the Content Restrictions component.
+
+   .. image:: https://github.com/eduNEXT/xblock-content-restrictions/assets/64440265/e8dedf11-4e04-4592-8d8f-a23a4db7952a
+      :alt: View of the component
+
+Here is an example of a Content Restrictions component with a Problem component as a child:
+
+    .. image:: https://github.com/eduNEXT/xblock-content-restrictions/assets/64440265/724a5a32-1488-41e6-b52d-236c53af8179
+       :alt: Example of a Content Restrictions component with a Problem component as a child
 
 These restrictions are applied to children in the Content Restrictions component. So in the Author View, you can add
-any other component as a child of the Content Restrictions component and the restrictions will be applied to that component.
-
+any other component as a child of the Content Restrictions component and the restrictions will be applied to those components.
 
 View from the Learning Management System (LMS)
 **********************************************
 
 When a learner accesses the course, the Content Restrictions component will be displayed as a message indicating the
 restriction that applies to the content and the action the learner needs to take to access the content.
+
+Password Restriction
+--------------------
+
+When the Password restriction is enabled, the learner will see a message indicating that the content is restricted and will be prompted to enter the password to access the content.
+After entering the correct password, the content will be displayed. If the learner enters an incorrect password, a message will be displayed indicating that the password is incorrect.
+
+Here is an example of the message that the learner will see when the content is restricted by a password:
+
+   .. image:: https://github.com/eduNEXT/xblock-content-restrictions/assets/64440265/e6a14193-4370-4752-b82a-751c35afc8e5
+        :alt: Password restriction message
+
+When the learner enters the correct password, the content will be displayed. However, if the learner enters an incorrect password, a message will be displayed indicating that the password is incorrect.
+
+   .. image:: https://github.com/eduNEXT/xblock-content-restrictions/assets/64440265/f345f874-1a58-4f8d-ae12-7fa6087c6c8b
+        :alt: Incorrect password message
+
+As specified in the configuration, the learner will see the explanation text and the incorrect password explanation text.
 
 Experimenting with this XBlock in the Workbench
 ************************************************

@@ -1,3 +1,8 @@
 <div class="content_restrictions_block">
-    {% for child_content in children_contents %} {{ child_content|safe }} {% endfor %}
+    {% for child_content in children_contents %}
+        {{ child_content|safe }}
+        <br>
+        <hr>
+    {% endfor %}
+    <br>
 </div>

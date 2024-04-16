@@ -30,6 +30,11 @@ class TestXblockContentRestrictions(TestCase):
             field_data={},
             scope_ids=ScopeIds('1', '2', '3', '4'),
         )
+        self.block.password_restriction = False
+        self.block.password = ''
+        self.block.user_provided_password = ''
+        self.block.incorrect_password_explanation_text = 'Incorrect password'
+        self.block.password_explanation_text = 'Enter the password'
 
     def test_student_view_without_children(self):
         """Render the student view without children.
@@ -42,7 +47,7 @@ class TestXblockContentRestrictions(TestCase):
 
         self.assertEqual(
             fragment.content.replace('\n', '').replace(' ', ''),
-            '<divclass="content_restrictions_block"></div>',
+            '<divclass="content_restrictions_block"><br></div>',
         )
 
     def test_student_view_with_children(self):
@@ -57,7 +62,7 @@ class TestXblockContentRestrictions(TestCase):
 
         self.assertEqual(
             fragment.content.replace('\n', '').replace(' ', ''),
-            '<divclass="content_restrictions_block">MyXBlock:countisnow0</div>',
+            '<divclass="content_restrictions_block">MyXBlock:countisnow0<br><hr><br></div>',
         )
 
 
@@ -95,3 +100,57 @@ class TestXblockContentRestrictions(TestCase):
             fragment.content.replace('\n', '').replace(' ', ''),
             '',
         )
+
+    def test_password_restriction(self):
+        """Test the password restriction.
+
+        Expected result: True if the password is correct, False otherwise.
+        """
+        self.block.password_restriction = True
+        self.block.password = '1234'
+
+        self.assertFalse(self.block.has_access_to_content)
+
+        self.block.user_provided_password = '1234'
+
+        self.assertTrue(self.block.has_access_to_content)
+
+    def test_student_view_with_password_restriction(self):
+        """Render the student view with password restriction.
+
+        Expected result: the password template.
+        """
+        self.block.password_restriction = True
+        self.block.password = '1234'
+        self.block.user_provided_password = ''
+
+        fragment = self.block.student_view({})
+
+        self.assertEqual(
+            fragment.content.replace('\n', '').replace(' ', ''),
+            """
+            <div class="content_restrictions_block">
+                <div class="content_restrictions">
+                    <div class="password_explanation_text"> Enter the password </div>
+                </div>
+                <input type="password" class="password" name="password"/>
+                <button class="submit-button">Submit</button>
+                <div class="incorrect_password_explanation_text"></div>
+            </div>
+            """.replace('\n', '').replace(' ', ''),
+        )
+
+    def test_has_access_with_password(self):
+        """Test the has_access_with_password method.
+
+        Expected result: True if the password is correct, False otherwise.
+        """
+        self.block.password_restriction = True
+        self.block.password = '1234'
+        request = Mock(method='POST', body=b'{"password": "1234"}')
+
+        self.assertTrue(self.block.has_access_with_password(request).json['success'])
+
+        request = Mock(method='POST', body=b'{"password": "12345"}')
+
+        self.assertFalse(self.block.has_access_with_password(request).json['success'])
