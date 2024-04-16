@@ -62,7 +62,7 @@ class TestXblockContentRestrictions(TestCase):
 
         self.assertEqual(
             fragment.content.replace('\n', '').replace(' ', ''),
-            '<divclass="content_restrictions_block">MyXBlock:countisnow0<br><br></div>',
+            '<divclass="content_restrictions_block">MyXBlock:countisnow0<br><hr><br></div>',
         )
 
 
