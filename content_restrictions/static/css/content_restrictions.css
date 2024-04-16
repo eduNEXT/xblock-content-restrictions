@@ -3,6 +3,5 @@
 .content_restrictions .password_explanation_text,
 .incorrect_password_explanation_text
  {
-    margin-top: 10px;
-    margin-bottom: 10px;
+    margin: 10px 0;
 }
