@@ -110,13 +110,13 @@ class XblockContentRestrictions(
 
     def studio_view(self, context):
         """
-        Render a form for editing this XBlock
+        Render a form for editing this XBlock with translations.
         """
         if self.service_declaration("i18n"):
             ugettext = self.ugettext
         else:
             def ugettext(text):
-                """ Dummy ugettext method that doesn't do anything """
+                """Dummy ugettext method that doesn't do anything."""
                 return text
 
         fragment = Fragment()
