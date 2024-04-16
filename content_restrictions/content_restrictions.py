@@ -18,6 +18,7 @@ def _(text):
     """Make '_' a no-op so we can scrape strings."""
     return text
 
+
 @XBlock.needs("i18n")
 class XblockContentRestrictions(
     StudioContainerWithNestedXBlocksMixin, StudioEditableXBlockMixin, XBlock
@@ -133,8 +134,8 @@ class XblockContentRestrictions(
             if field_info is not None:
                 if field_info["type"] == "string":
                     # pylint: disable=translation-of-non-string
-                    field_info["default"] = ugettext(field_info["default"]) if field_info["default"] else ""
-                    field_info["value"] = ugettext(field_info["value"]) if field_info["value"] else ""
+                    field_info["default"] = self.ugettext(field_info.get("default"))
+                    field_info["value"] = self.ugettext(field_info.get("value"))
                 context["fields"].append(field_info)
         fragment.content = self.loader.render_django_template('templates/studio_edit.html', context)
         fragment.add_javascript(self.loader.load_unicode('public/studio_edit.js'))

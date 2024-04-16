@@ -50,3 +50,9 @@ STATICI18N_PACKAGES = (
 )
 STATICI18N_ROOT = 'content_restrictions/public/js'
 STATICI18N_OUTPUT_DIR = 'translations'
+
+LANGUAGES = [
+    ("en", "English - Source Language"),
+    ("es_419", "Spanish (Latin America)"),
+    ("es_ES", "Spanish (Spain)"),
+]

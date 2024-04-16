@@ -22,7 +22,7 @@ Unreleased
 Added
 =====
 
-* Aandlers for password restriction configurations.
+* Handlers for password restriction configurations.
 * Spanish (es_ES/es_419) translations for the xblock.
 
 0.1.0 – 2024-03-26
