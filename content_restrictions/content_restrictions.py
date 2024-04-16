@@ -116,7 +116,7 @@ class XblockContentRestrictions(
             ugettext = self.ugettext
         else:
             def ugettext(text):
-                """Dummy ugettext method that doesn't do anything."""
+                """Get dummy ugettext method that doesn't do anything."""
                 return text
 
         fragment = Fragment()
