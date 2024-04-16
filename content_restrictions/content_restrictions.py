@@ -18,7 +18,7 @@ def _(text):
     """Make '_' a no-op so we can scrape strings."""
     return text
 
-
+@XBlock.needs("i18n")
 class XblockContentRestrictions(
     StudioContainerWithNestedXBlocksMixin, StudioEditableXBlockMixin, XBlock
 ):

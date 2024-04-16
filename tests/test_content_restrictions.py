@@ -120,6 +120,7 @@ class TestXblockContentRestrictions(TestCase):
 
         Expected result: the password template.
         """
+        self.runtime.service = ToyRuntime().service
         self.block.password_restriction = True
         self.block.password = '1234'
         self.block.user_provided_password = ''
