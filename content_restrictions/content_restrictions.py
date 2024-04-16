@@ -19,6 +19,7 @@ def _(text):
     return text
 
 
+@XBlock.needs("i18n")
 class XblockContentRestrictions(
     StudioContainerWithNestedXBlocksMixin, StudioEditableXBlockMixin, XBlock
 ):
@@ -108,6 +109,31 @@ class XblockContentRestrictions(
 
         return fragment
 
+    def studio_view(self, context):
+        """
+        Render a form for editing this XBlock with translations.
+        """
+        fragment = Fragment()
+        context = {'fields': []}
+        # Build a list of all the fields that can be edited:
+        for field_name in self.editable_fields:
+            field = self.fields[field_name]  # pylint: disable=unsubscriptable-object
+            assert field.scope in (Scope.content, Scope.settings), (
+                "Only Scope.content or Scope.settings fields can be used with "
+                "StudioEditableXBlockMixin. Other scopes are for user-specific data and are "
+                "not generally created/configured by content authors in Studio."
+            )
+            field_info = self._make_field_info(field_name, field)
+            if field_info is not None:
+                if field_info["type"] == "string":
+                    field_info["default"] = self.ugettext(field_info["default"]) if field_info["default"] else ""
+                    field_info["value"] = self.ugettext(field_info["value"]) if field_info["value"] else ""
+                context["fields"].append(field_info)
+        fragment.content = self.loader.render_django_template('templates/studio_edit.html', context)
+        fragment.add_javascript(self.loader.load_unicode('public/studio_edit.js'))
+        fragment.initialize_js('StudioEditableXBlockMixin')
+        return fragment
+
     def student_view(self, context):
         """
         View for students to see the blocks in the unit.
@@ -131,7 +157,7 @@ class XblockContentRestrictions(
         render_context.update(context)
         fragment.add_content(
             LOCAL_RESOURCE_LOADER.render_django_template(
-                "static/html/children.html", render_context
+                "static/html/children.html", render_context, i18n_service=self.runtime.service(self, "i18n")
             )
         )
         return fragment
@@ -160,7 +186,8 @@ class XblockContentRestrictions(
                 f"static/html/{self.restriction_template}",
                 {
                     "block": self,
-                }
+                },
+                i18n_service=self.runtime.service(self, "i18n"),
             )
         )
         fragment.add_css(self.resource_string("static/css/content_restrictions.css"))
@@ -205,9 +232,13 @@ class XblockContentRestrictions(
             return {
                 "success": True,
             }
+        incorrect_password_explanation_text = self.incorrect_password_explanation_text
+        if not incorrect_password_explanation_text:
+            incorrect_password_explanation_text = _("Incorrect password. Please try again.")
+
         return {
             "success": False,
-            "error_message": self.incorrect_password_explanation_text,
+            "error_message": incorrect_password_explanation_text,
         }
 
     # TO-DO: change this to create the scenarios you'd like to see in the

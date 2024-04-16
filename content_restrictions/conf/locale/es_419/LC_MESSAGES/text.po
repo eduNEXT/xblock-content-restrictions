@@ -1,0 +1,101 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-04-12 11:21-0400\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: content_restrictions.py:32
+msgid "Display Name"
+msgstr "Nombre a mostrar"
+
+#: content_restrictions.py:33
+msgid "The display name for this component."
+msgstr "El nombre para mostrar de este componente."
+
+#: content_restrictions.py:35
+msgid "Content With Access Restrictions"
+msgstr "Contenidos con restricciones de acceso"
+
+#: content_restrictions.py:39
+msgid "Password Restriction"
+msgstr "Restricción de contraseña"
+
+#: content_restrictions.py:40
+msgid "When enabled, the content will be restricted by password."
+msgstr "Si esta opción está activa, entonces el contenido estará restringido por contraseña."
+
+#: content_restrictions.py:46
+msgid "Password Explanatory Message"
+msgstr "Mensaje explicativo de la contraseña"
+
+#: content_restrictions.py:47
+msgid ""
+"This message will be shown when the learner is prompted to enter the "
+"password."
+msgstr "Este mensaje se mostrará cuando se pida al estudiante que introduzca la contraseña."
+
+#: content_restrictions.py:49
+msgid "Please enter the password to access this content."
+msgstr "Introduzca la contraseña para acceder a este contenido."
+
+#: content_restrictions.py:53
+msgid "Incorrect Password Explanatory Message"
+msgstr "Mensaje explicativo de contraseña incorrecta"
+
+#: content_restrictions.py:55
+msgid ""
+"This message will be shown when the learner enters an incorrect password."
+msgstr "Este mensaje se mostrará cuando el estudiante introduzca una contraseña incorrecta."
+
+#: content_restrictions.py:58 content_restrictions.py:243
+msgid "Incorrect password. Please try again."
+msgstr "Contraseña incorrecta. Por favor, inténtelo de nuevo."
+
+#: content_restrictions.py:62
+msgid "Password"
+msgstr "Contraseña"
+
+#: content_restrictions.py:64
+msgid ""
+"Learners will need to type this password to access the content of the "
+"xblock. If the learner does not type the correct password, they will not "
+"have access to the content and will get an explanatory message instead. If "
+"the password is changed after the learner has already accessed the content, "
+"the learner will need to type the new password to access the content."
+msgstr
+"Los estudiantes deberán introducir esta contraseña para acceder al contenido del xblock."
+" Si el estudiante no introduce la contraseña correcta, no tendrá acceso al contenido y"
+" recibirá un mensaje explicativo. Si la contraseña se cambia después de que el estudiante"
+" ya haya accedido al contenido, el estudiante tendrá que escribir la nueva contraseña"
+" para acceder al contenido."
+
+#: content_restrictions.py:74
+msgid "User Provided Password"
+msgstr ""
+
+#: content_restrictions.py:76
+msgid ""
+"The password that the user has provided. This is used to check if the user "
+"has entered the correct password."
+msgstr ""
+
+#: content_restrictions.py:292
+msgid "Dummy"
+msgstr ""
+
+#: static/html/password_restriction.html:7
+msgid "Submit"
+msgstr "Enviar"

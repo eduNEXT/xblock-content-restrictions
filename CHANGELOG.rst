@@ -16,10 +16,19 @@ Unreleased
 
 *
 
+0.2.0 – 2024-04-16
+**********************************************
+
+Added
+=====
+
+* Handlers for password restriction configurations.
+* Spanish (es_ES/es_419) translations for the xblock.
+
 0.1.0 – 2024-03-26
 **********************************************
 
 Added
 =====
 
-* First release on PyPI.
+* First release.
