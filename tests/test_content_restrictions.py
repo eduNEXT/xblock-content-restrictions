@@ -47,7 +47,7 @@ class TestXblockContentRestrictions(TestCase):
 
         self.assertEqual(
             fragment.content.replace('\n', '').replace(' ', ''),
-            '<divclass="content_restrictions_block"></div>',
+            '<divclass="content_restrictions_block"><br></div>',
         )
 
     def test_student_view_with_children(self):
@@ -62,7 +62,7 @@ class TestXblockContentRestrictions(TestCase):
 
         self.assertEqual(
             fragment.content.replace('\n', '').replace(' ', ''),
-            '<divclass="content_restrictions_block">MyXBlock:countisnow0</div>',
+            '<divclass="content_restrictions_block">MyXBlock:countisnow0<br><br></div>',
         )
 
 
