@@ -242,31 +242,27 @@ class XblockContentRestrictions(
         client_ips = ip.get_all_client_ips(request)
         ip_ranges = self.ip_ranges_whitelist.split(",")
         for ip_range in ip_ranges:
-            start_ip, end_ip = ip_range.split("-")
-            for client_ip in client_ips:
-                if self.ip_in_whitelist(client_ip, start_ip, end_ip):
-                    return True
+            if any(self.ip_in_network(client_ip, ip_range) for client_ip in client_ips):
+                return True
         return False
 
     @staticmethod
-    def ip_in_whitelist(ip_address: str, start_ip: str, end_ip: str) -> bool:
+    def ip_in_network(ip_address: str, ip_network: str) -> bool:
         """
-        Check if the IP is in the whitelist.
+        Check if the IP address is in the IP network.
 
         Args:
             ip_address (str): The IP address to check.
-            start_ip (str): The start of the IP range.
-            end_ip (str): The end of the IP range.
+            ip_network (str): The IP network to check against.
 
         Returns:
-            bool: True if the IP is in the whitelist, False otherwise.
+            bool: True if the IP is in the network, False otherwise.
         """
         try:
-            ip_address = ipaddress.IPv4Address(ip_address)
-            start_ip = ipaddress.IPv4Address(start_ip)
-            end_ip = ipaddress.IPv4Address(end_ip)
-            return start_ip <= ip_address <= end_ip
-        except ipaddress.AddressValueError:
+            ip_address = ipaddress.ip_address(ip_address)
+            ip_network = ipaddress.ip_network(ip_network.strip(), strict=False)
+            return ip_address in ip_network
+        except ValueError:
             return False
 
     def render_restricted_student_view(self):
