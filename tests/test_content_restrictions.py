@@ -2,10 +2,11 @@
 Tests for XblockContentRestrictions
 """
 
+from unittest.mock import Mock
+
 from django.test import TestCase
 from xblock.fields import ScopeIds
 from xblock.test.toy_runtime import ToyRuntime
-from unittest.mock import Mock
 
 from content_restrictions.content_restrictions import XblockContentRestrictions
 
@@ -31,6 +32,7 @@ class TestXblockContentRestrictions(TestCase):
             scope_ids=ScopeIds('1', '2', '3', '4'),
         )
         self.block.password_restriction = False
+        self.block.ip_restriction = False
         self.block.password = ''
         self.block.user_provided_password = ''
         self.block.incorrect_password_explanation_text = 'Incorrect password'
