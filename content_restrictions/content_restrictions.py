@@ -240,30 +240,35 @@ class XblockContentRestrictions(
             bool: True if the user has access to the content, False otherwise.
         """
         client_ips = ip.get_all_client_ips(request)
-        ip_ranges = self.ip_ranges_whitelist.split(",")
-        for ip_range in ip_ranges:
-            if any(self.ip_in_network(client_ip, ip_range) for client_ip in client_ips):
+        ip_address_or_ranges = self.ip_ranges_whitelist.split(",")
+        for ip_add_or_range in ip_address_or_ranges:
+            if any(self.ip_has_access(client_ip, ip_add_or_range) for client_ip in client_ips):
                 return True
         return False
 
     @staticmethod
-    def ip_in_network(ip_address: str, ip_network: str) -> bool:
+    def ip_has_access(client_ip: str, ip_address_or_range: str) -> bool:
         """
-        Check if the IP address is in the IP network.
+        Check if the client IP matches the IP address or is in the IP range.
 
         Args:
-            ip_address (str): The IP address to check.
-            ip_network (str): The IP network to check against.
+            client_ip (str): The IP address to check.
+            ip_address_or_range (str): The IP address or IP range to check against.
 
         Returns:
             bool: True if the IP is in the network, False otherwise.
         """
+        client_ip = ipaddress.ip_address(client_ip)
+
         try:
-            ip_address = ipaddress.ip_address(ip_address)
-            ip_network = ipaddress.ip_network(ip_network.strip(), strict=False)
-            return ip_address in ip_network
+            ip_address = ipaddress.ip_address(ip_address_or_range.strip())
+            return client_ip == ip_address
         except ValueError:
-            return False
+            try:
+                ip_network = ipaddress.ip_network(ip_address_or_range.strip(), strict=False)
+                return client_ip in ip_network
+            except ValueError:
+                return False
 
     def render_restricted_student_view(self):
         """
