@@ -128,7 +128,7 @@ class XblockContentRestrictions(
         "incorrect_password_explanation_text",
         "password",
         "ip_restriction",
-        "ip_range_whitelist",
+        "ip_ranges_whitelist",
         "ip_explanation_text",
     ]
 
@@ -211,12 +211,23 @@ class XblockContentRestrictions(
         Check if the user has access to the content.
 
         - If password restriction is enabled, check if the user has entered the correct password.
+        - If IP restriction is enabled, check if the user has access with the IP whitelist.
         """
-        if self.password_restriction:
-            return bool(self.user_provided_password == self.password)
+        if self.password_restriction and not self.is_correct_password:
+            return False
         if self.ip_restriction:
             return self.has_access_with_ip_whitelist(get_current_request())
         return True
+
+    @property
+    def is_correct_password(self) -> bool:
+        """
+        Check if the user has entered the correct password.
+
+        Returns:
+            bool: True if the user has entered the correct password, False otherwise.
+        """
+        return self.user_provided_password == self.password
 
     def has_access_with_ip_whitelist(self, request) -> bool:
         """
@@ -298,7 +309,7 @@ class XblockContentRestrictions(
         Returns:
             str: The current restriction template.
         """
-        if self.password_restriction:
+        if self.password_restriction and not self.is_correct_password:
             return "password_restriction.html"
         if self.ip_restriction:
             return "ip_restriction.html"
@@ -315,7 +326,7 @@ class XblockContentRestrictions(
             dict: The result of the check.
         """
         self.user_provided_password = data.get("password")
-        if self.user_provided_password == self.password:
+        if self.is_correct_password:
             return {
                 "success": True,
             }
