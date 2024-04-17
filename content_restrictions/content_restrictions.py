@@ -1,6 +1,11 @@
 """XBlock for content restrictions."""
+
+import ipaddress
+
 import pkg_resources
+from crum import get_current_request
 from django.utils import translation
+from edx_django_utils import ip
 from xblock.core import XBlock
 from xblock.fields import Boolean, Scope, String
 from xblock.utils.resources import ResourceLoader
@@ -81,12 +86,50 @@ class XblockContentRestrictions(
         default="",
     )
 
+    ip_restriction = Boolean(
+        display_name=_("IP Restriction"),
+        help=_(
+            "When enabled, the content will be restricted by a range of IP addresses."
+        ),
+        scope=Scope.settings,
+        default=False,
+    )
+
+    ip_ranges_whitelist = String(
+        display_name=_("IP Ranges Whitelist"),
+        help=_(
+            "List of IP address ranges from which the content can be accessed. Use commas"
+            " to separate multiple IP address ranges. If the learner's IP address is not"
+            " in the whitelist, they will not have access to the content. The range should"
+            " be in the format '{start-ip}-{end-ip}', for example, '172.16.0.0-172.31.255.255',"
+            " or with multiple ranges, for example, '192.168.0.0-192.169.0.0,200.0.0.0-200.0.0.10'"
+        ),
+        scope=Scope.settings,
+        default="",
+    )
+
+    ip_explanation_text = String(
+        display_name=_("IP Explanatory Message"),
+        help=_(
+            "This message will be shown when the learner is browsing from an IP address"
+            " that is not whitelisted."
+        ),
+        scope=Scope.settings,
+        default=_(
+            "You are entering from an IP address that is not whitelisted. Please follow"
+            " the instructions provided in the course introduction video."
+        ),
+    )
+
     editable_fields = [
         "display_name",
         "password_restriction",
         "password_explanation_text",
         "incorrect_password_explanation_text",
         "password",
+        "ip_restriction",
+        "ip_range_whitelist",
+        "ip_explanation_text",
     ]
 
     def resource_string(self, path):
@@ -171,7 +214,49 @@ class XblockContentRestrictions(
         """
         if self.password_restriction:
             return bool(self.user_provided_password == self.password)
+        if self.ip_restriction:
+            return self.has_access_with_ip_whitelist(get_current_request())
         return True
+
+    def has_access_with_ip_whitelist(self, request) -> bool:
+        """
+        Check if the user has access to the content based on the IP whitelist.
+
+        Args:
+            request (WSGIRequest): The current request object.
+
+        Returns:
+            bool: True if the user has access to the content, False otherwise.
+        """
+        client_ips = ip.get_all_client_ips(request)
+        ip_ranges = self.ip_ranges_whitelist.split(",")
+        for ip_range in ip_ranges:
+            start_ip, end_ip = ip_range.split("-")
+            for client_ip in client_ips:
+                if self.ip_in_whitelist(client_ip, start_ip, end_ip):
+                    return True
+        return False
+
+    @staticmethod
+    def ip_in_whitelist(ip_address: str, start_ip: str, end_ip: str) -> bool:
+        """
+        Check if the IP is in the whitelist.
+
+        Args:
+            ip_address (str): The IP address to check.
+            start_ip (str): The start of the IP range.
+            end_ip (str): The end of the IP range.
+
+        Returns:
+            bool: True if the IP is in the whitelist, False otherwise.
+        """
+        try:
+            ip_address = ipaddress.IPv4Address(ip_address)
+            start_ip = ipaddress.IPv4Address(start_ip)
+            end_ip = ipaddress.IPv4Address(end_ip)
+            return start_ip <= ip_address <= end_ip
+        except ipaddress.AddressValueError:
+            return False
 
     def render_restricted_student_view(self):
         """
@@ -215,6 +300,8 @@ class XblockContentRestrictions(
         """
         if self.password_restriction:
             return "password_restriction.html"
+        if self.ip_restriction:
+            return "ip_restriction.html"
         return "no_access.html"
 
     @XBlock.json_handler
