@@ -21,25 +21,31 @@ backports-zoneinfo==0.2.1 ; python_version < "3.9"
     #   django
 binaryornot==0.4.4
     # via cookiecutter
-boto3==1.34.83
+boto3==1.34.85
     # via
     #   -r requirements/base.txt
     #   fs-s3fs
-botocore==1.34.83
+botocore==1.34.85
     # via
     #   -r requirements/base.txt
     #   boto3
     #   s3transfer
 certifi==2024.2.2
     # via requests
+cffi==1.16.0
+    # via
+    #   -r requirements/base.txt
+    #   pynacl
 chardet==5.2.0
     # via binaryornot
 charset-normalizer==3.3.2
     # via requests
 click==8.1.7
     # via
+    #   -r requirements/base.txt
     #   code-annotations
     #   cookiecutter
+    #   edx-django-utils
 code-annotations==1.8.0
     # via -r requirements/test.in
 cookiecutter==2.6.0
@@ -50,7 +56,10 @@ coverage[toml]==7.4.4
     #   -c https://raw.githubusercontent.com/edx/edx-lint/master/edx_lint/files/common_constraints.txt
     #   -r requirements/base.txt
     #   django-appconf
+    #   django-crum
     #   django-statici18n
+    #   django-waffle
+    #   edx-django-utils
     #   edx-i18n-tools
     #   openedx-django-pyfs
     #   xblock-sdk
@@ -58,7 +67,17 @@ django-appconf==1.0.6
     # via
     #   -r requirements/base.txt
     #   django-statici18n
+django-crum==0.7.9
+    # via
+    #   -r requirements/base.txt
+    #   edx-django-utils
 django-statici18n==2.4.0
+    # via -r requirements/base.txt
+django-waffle==4.1.0
+    # via
+    #   -r requirements/base.txt
+    #   edx-django-utils
+edx-django-utils==5.12.0
     # via -r requirements/base.txt
 edx-i18n-tools==1.5.0
     # via -r requirements/base.txt
@@ -113,6 +132,10 @@ markupsafe==2.1.5
     #   xblock
 mdurl==0.1.2
     # via markdown-it-py
+newrelic==9.8.0
+    # via
+    #   -r requirements/base.txt
+    #   edx-django-utils
 openedx-django-pyfs==3.6.0
     # via
     #   -r requirements/base.txt
@@ -124,15 +147,29 @@ path==16.14.0
     #   -r requirements/base.txt
     #   edx-i18n-tools
 pbr==6.0.0
-    # via stevedore
+    # via
+    #   -r requirements/base.txt
+    #   stevedore
 pluggy==1.4.0
     # via pytest
 polib==1.2.0
     # via
     #   -r requirements/base.txt
     #   edx-i18n-tools
+psutil==5.9.8
+    # via
+    #   -r requirements/base.txt
+    #   edx-django-utils
+pycparser==2.22
+    # via
+    #   -r requirements/base.txt
+    #   cffi
 pygments==2.17.2
     # via rich
+pynacl==1.5.0
+    # via
+    #   -r requirements/base.txt
+    #   edx-django-utils
 pypng==0.20220715.0
     # via xblock-sdk
 pytest==8.1.1
@@ -186,12 +223,15 @@ six==1.16.0
     #   fs
     #   fs-s3fs
     #   python-dateutil
-sqlparse==0.4.4
+sqlparse==0.5.0
     # via
     #   -r requirements/base.txt
     #   django
 stevedore==5.2.0
-    # via code-annotations
+    # via
+    #   -r requirements/base.txt
+    #   code-annotations
+    #   edx-django-utils
 text-unidecode==1.3
     # via python-slugify
 tomli==2.0.1
