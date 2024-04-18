@@ -98,11 +98,17 @@ class XblockContentRestrictions(
     ip_ranges_whitelist = String(
         display_name=_("IP Ranges Whitelist"),
         help=_(
-            "List of IP address ranges from which the content can be accessed. Use commas"
-            " to separate multiple IP address ranges. If the learner's IP address is not"
-            " in the whitelist, they will not have access to the content. The range should"
-            " be in the format '{start-ip}-{end-ip}', for example, '172.16.0.0-172.31.255.255',"
-            " or with multiple ranges, for example, '192.168.0.0-192.169.0.0,200.0.0.0-200.0.0.10'"
+            "List of IP addresses or IP address ranges from which the content can be accessed."
+            " The compatible protocols are IPv4 and IPv6. Use commas to separate multiple IP"
+            " addresses or IP address ranges. If the learner's IP address is not in the"
+            " whitelist, they will not have access to the content. The range should be in the"
+            " CIDR format, e.g. (IPv4) '192.168.1.0/24', in this case only IP addresses from "
+            " '192.168.1.0' to '192.168.1.255' can access the content, or (IPv6) '2001:db8:85a3::/48',"
+            " in this case only IP addresses from '2001:db8:85a3::' to '2001:db8:85a3:ffff:ffff:ffff:ffff:ffff'"
+            " can access to the content. Also, a single IP address can be provided, e.g. (IPv4) '172.16.0.0'."
+            " or (IPv6) '77b3:2abc:ced0:2f34:9630:c475:96a7:cb38'. Alternatively, is possible "
+            " mix IP addresses and IP ranges with different formats, e.g. "
+            "'192.168.1.0/24,172.16.0.0,65c1:e700::/24,5c87::'"
         ),
         scope=Scope.settings,
         default="",
