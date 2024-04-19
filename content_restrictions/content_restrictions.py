@@ -257,6 +257,8 @@ class XblockContentRestrictions(
         """
         Check if the client IP matches the IP address or is in the IP range.
 
+        The IP address or range can be in IPv4 or IPv6 format.
+
         Args:
             client_ip (str): The IP address to check.
             ip_address_or_range (str): The IP address or IP range to check against.
