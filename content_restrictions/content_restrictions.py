@@ -95,8 +95,8 @@ class XblockContentRestrictions(
         default=False,
     )
 
-    ip_ranges_whitelist = List(
-        display_name=_("IP Ranges Whitelist"),
+    ip_whitelist = List(
+        display_name=_("IP Whitelist"),
         help=_(
             "List of IP addresses or IP address ranges from which the content can be accessed."
             " The compatible protocols are IPv4 and IPv6. If the learner's IP address is not in the"
@@ -132,7 +132,7 @@ class XblockContentRestrictions(
         "incorrect_password_explanation_text",
         "password",
         "ip_restriction",
-        "ip_ranges_whitelist",
+        "ip_whitelist",
         "ip_explanation_text",
     ]
 
@@ -244,7 +244,7 @@ class XblockContentRestrictions(
             bool: True if the user has access to the content, False otherwise.
         """
         client_ips = ip.get_all_client_ips(request)
-        for ip_add_or_range in self.ip_ranges_whitelist:
+        for ip_add_or_range in self.ip_whitelist:
             if any(self.ip_has_access(client_ip, ip_add_or_range) for client_ip in client_ips):
                 return True
         return False

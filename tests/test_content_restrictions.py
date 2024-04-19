@@ -38,7 +38,7 @@ class TestXblockContentRestrictions(TestCase):
         self.block.user_provided_password = ''
         self.block.incorrect_password_explanation_text = 'Incorrect password'
         self.block.password_explanation_text = 'Enter the password'
-        self.block.ip_ranges_whitelist = []
+        self.block.ip_whitelist = []
         self.block.ip_explanation_text = "Your IP address is not allowed to access this content."
 
     def test_student_view_without_children(self):
@@ -168,7 +168,7 @@ class TestXblockContentRestrictions(TestCase):
         """
         self.runtime.service = ToyRuntime().service
         self.block.ip_restriction = True
-        self.block.ip_ranges_whitelist = ["172.16.0.1"]
+        self.block.ip_whitelist = ["172.16.0.1"]
         mock_get_all_client_ips.return_value = ["192.68.0.1"]
 
         fragment = self.block.student_view({})
@@ -197,7 +197,7 @@ class TestXblockContentRestrictions(TestCase):
         mock_request = Mock()
         mock_get_all_client_ips.return_value = ["172.16.0.1"]
         self.block.ip_restriction = True
-        self.block.ip_ranges_whitelist = ["172.16.0.1"]
+        self.block.ip_whitelist = ["172.16.0.1"]
 
         result = self.block.has_access_with_ip_whitelist(mock_request)
 
