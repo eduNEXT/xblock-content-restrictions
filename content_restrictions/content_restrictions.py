@@ -7,7 +7,7 @@ from crum import get_current_request
 from django.utils import translation
 from edx_django_utils import ip
 from xblock.core import XBlock
-from xblock.fields import Boolean, Scope, String
+from xblock.fields import Boolean, List, Scope, String
 from xblock.utils.resources import ResourceLoader
 from xblock.utils.studio_editable import StudioContainerWithNestedXBlocksMixin, StudioEditableXBlockMixin
 
@@ -95,7 +95,7 @@ class XblockContentRestrictions(
         default=False,
     )
 
-    ip_ranges_whitelist = String(
+    ip_ranges_whitelist = List(
         display_name=_("IP Ranges Whitelist"),
         help=_(
             "List of IP addresses or IP address ranges from which the content can be accessed."
@@ -110,7 +110,7 @@ class XblockContentRestrictions(
             " with different formats, e.g. '192.168.1.0/24,172.16.0.0,65c1:e700::/24,5c87::'"
         ),
         scope=Scope.settings,
-        default="",
+        default=[],
     )
 
     ip_explanation_text = String(
@@ -245,8 +245,7 @@ class XblockContentRestrictions(
             bool: True if the user has access to the content, False otherwise.
         """
         client_ips = ip.get_all_client_ips(request)
-        ip_address_or_ranges = self.ip_ranges_whitelist.split(",")
-        for ip_add_or_range in ip_address_or_ranges:
+        for ip_add_or_range in self.ip_ranges_whitelist:
             if any(self.ip_has_access(client_ip, ip_add_or_range) for client_ip in client_ips):
                 return True
         return False
@@ -268,11 +267,11 @@ class XblockContentRestrictions(
         client_ip = ipaddress.ip_address(client_ip)
 
         try:
-            ip_address = ipaddress.ip_address(ip_address_or_range.strip())
+            ip_address = ipaddress.ip_address(ip_address_or_range)
             return client_ip == ip_address
         except ValueError:
             try:
-                ip_network = ipaddress.ip_network(ip_address_or_range.strip(), strict=False)
+                ip_network = ipaddress.ip_network(ip_address_or_range, strict=False)
                 return client_ip in ip_network
             except ValueError:
                 return False
