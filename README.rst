@@ -89,8 +89,16 @@ There are the available configuration options for the IP restriction:
      in CIDR notation. The IPv6 range can be written in the long form or the
      short form.
 
-     - **IPv4**: ``192.168.0.1/24``, ``203.0.113.0/24``, ``172.16.0.0/16``
-     - **IPv6**: ``2001:0db8:85a3:0000:0000:8a2e:0370:7334/64``, ``2400:cb00::/32``
+     - **IPv4**: ``192.168.0.0/24``, in this case only the IP addresses from
+       ``192.168.0.0`` to ``192.168.0.255`` has access to the content.
+       Another address could be ``203.0.0.0/16``, in this case only the IP
+       addresses from ``203.0.0.0`` to ``203.0.255.255`` has access to the
+       content.
+     - **IPv6**: ``2400:cb00::/32``, in this case only the IP addresses from
+       ``2400:cb00::`` to ``2400:cb00:ffff:ffff:ffff:ffff:ffff:ffff`` has
+       access to the content. Another address could be ``2001:db8:85a3::/64``,
+       in this case only the IP addresses from ``2001:db8:85a3::`` to
+       ``2001:db8:85a3::ffff:ffff:ffff:ffff`` has access to the content.
 
   Also, you can include multiple IP addresses or IP ranges in the whitelist:
 
