@@ -51,7 +51,7 @@ Specify the password in the **Password** field in the Content Restrictions compo
 After publishing the unit with the Content Restrictions component, the learner will see a message indicating that the content is restricted and will be prompted to enter the password to access the content.
 When the learner enters the correct password, the content will be displayed.
 
-There are the available configuration options for the Password restriction:
+Here are the available configuration options for the Password restriction:
 
 - **Password Restriction**: Enable or disable the password restriction. If disabled, the other configuration options will be ignored.
 - **Password**: The password that the learner must enter to access the content.
@@ -71,7 +71,7 @@ indicating that the content is restricted and will not be able to access the
 content. If the learner's IP address is in the whitelist, the content will be
 displayed.
 
-There are the available configuration options for the IP restriction:
+Here are the available configuration options for the IP restriction:
 
 - **IP Restriction**: Enable or disable the IP restriction. If disabled, the
   other configuration options will be ignored.
