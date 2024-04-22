@@ -1,6 +1,7 @@
 """XBlock for content restrictions."""
 
 import ipaddress
+import logging
 
 import pkg_resources
 from crum import get_current_request
@@ -17,6 +18,7 @@ except ModuleNotFoundError:
     from web_fragments.fragment import Fragment
 
 LOCAL_RESOURCE_LOADER = ResourceLoader(__name__)
+log = logging.getLogger(__name__)
 
 
 def _(text):
@@ -273,6 +275,7 @@ class XblockContentRestrictions(
                 ip_network = ipaddress.ip_network(ip_address_or_range, strict=False)
                 return client_ip in ip_network
             except ValueError:
+                log.exception(f"Invalid IP address or range: {ip_address_or_range}")
                 return False
 
     def render_restricted_student_view(self):
