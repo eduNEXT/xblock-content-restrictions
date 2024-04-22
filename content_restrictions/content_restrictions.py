@@ -111,6 +111,7 @@ class XblockContentRestrictions(
             ' with different formats, e.g. ["192.168.1.0/24", "172.16.0.0", "65c1:e700::/24", "5c87::"]'
         ),
         scope=Scope.settings,
+        enforce_type=True,
         default=[],
     )
 
@@ -245,6 +246,9 @@ class XblockContentRestrictions(
         Returns:
             bool: True if the user has access to the content, False otherwise.
         """
+        if self.ip_whitelist is None:
+            self.ip_whitelist = []
+
         client_ips = ip.get_all_client_ips(request)
         for ip_add_or_range in self.ip_whitelist:
             if any(self.ip_has_access(client_ip, ip_add_or_range) for client_ip in client_ips):
