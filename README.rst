@@ -51,27 +51,76 @@ Specify the password in the **Password** field in the Content Restrictions compo
 After publishing the unit with the Content Restrictions component, the learner will see a message indicating that the content is restricted and will be prompted to enter the password to access the content.
 When the learner enters the correct password, the content will be displayed.
 
-There are the available configuration options for the Password restriction:
+Here are the available configuration options for the Password restriction:
 
 - **Password Restriction**: Enable or disable the password restriction. If disabled, the other configuration options will be ignored.
 - **Password**: The password that the learner must enter to access the content.
 - **Password Explanation Text**: The text that will be displayed to the learner to explain how to access the content.
 - **Incorrect Password Explanation Text**: The text that will be displayed to the learner when the entered password is incorrect.
 
+IP Restriction
+--------------------
+When you select the IP restriction option, you need to specify the IP
+addresses that are allowed to access the content. Specify the IP addresses or
+IP ranges in the **IP Whitelist** field in the Content Restrictions component
+configuration.
+
+After publishing the unit with the Content Restrictions component, if the
+learner's IP address is not in the whitelist, the learner will see a message
+indicating that the content is restricted and will not be able to access the
+content. If the learner's IP address is in the whitelist, the content will be
+displayed.
+
+Here are the available configuration options for the IP restriction:
+
+- **IP Restriction**: Enable or disable the IP restriction. If disabled, the
+  other configuration options will be ignored.
+- **IP Whitelist**: The IP addresses or IP ranges that are allowed to access
+  the content. The following are some valid examples:
+
+  1. **Single IP Address**: You can specify a single IP address. The IPv6
+     address can be written in the long form or the short form.
+
+     - **IPv4**: ``10.16.0.1``, ``172.16.0.1``, ``28.44.113.239``
+     - **IPv6**: ``2001:0db8:85a3:0000:0000:8a2e:0370:7334``,
+       ``2a02:2770::21a:4aff:feb3:2ee``, ``fe80::1``
+
+  2. **IP Range**: You can specify an IP range. The range must be specified
+     in CIDR notation. The IPv6 range can be written in the long form or the
+     short form.
+
+     - **IPv4**: ``192.168.0.0/24``, in this case only the IP addresses from
+       ``192.168.0.0`` to ``192.168.0.255`` has access to the content.
+       Another address could be ``203.0.0.0/16``, in this case only the IP
+       addresses from ``203.0.0.0`` to ``203.0.255.255`` has access to the
+       content.
+     - **IPv6**: ``2400:cb00::/32``, in this case only the IP addresses from
+       ``2400:cb00::`` to ``2400:cb00:ffff:ffff:ffff:ffff:ffff:ffff`` has
+       access to the content. Another address could be ``2001:db8:85a3::/64``,
+       in this case only the IP addresses from ``2001:db8:85a3::`` to
+       ``2001:db8:85a3::ffff:ffff:ffff:ffff`` has access to the content.
+
+  Also, you can include multiple IP addresses or IP ranges in the whitelist:
+
+  ``["10.16.0.1", "2001:0db8:85a3:0000:0000:8a2e:0370:7334", "172.16.0.0/16", "2400:cb00::/32"]``
+
+- **IP Explanation Text**: The text that will be displayed to the learner when
+  the content is restricted by an IP address.
+
 Here is how the Content Restrictions component looks in the Author View:
 
-   .. image:: https://github.com/eduNEXT/xblock-content-restrictions/assets/64440265/5f9e73d0-4def-41bd-b3ab-ffae1ec958b3
-      :alt: Author view for component
+.. image:: https://github.com/eduNEXT/xblock-content-restrictions/assets/64440265/5f9e73d0-4def-41bd-b3ab-ffae1ec958b3
+   :alt: Author view for component
 
 When accessing the component by selecting the **view** button, you will see the list of children components that are restricted by the Content Restrictions component.
 
-   .. image:: https://github.com/eduNEXT/xblock-content-restrictions/assets/64440265/e8dedf11-4e04-4592-8d8f-a23a4db7952a
-      :alt: View of the component
+.. image:: https://github.com/eduNEXT/xblock-content-restrictions/assets/64440265/e8dedf11-4e04-4592-8d8f-a23a4db7952a
+   :alt: View of the component
 
 Here is an example of a Content Restrictions component with a Problem component as a child:
 
-    .. image:: https://github.com/eduNEXT/xblock-content-restrictions/assets/64440265/724a5a32-1488-41e6-b52d-236c53af8179
-       :alt: Example of a Content Restrictions component with a Problem component as a child
+.. image:: https://github.com/eduNEXT/xblock-content-restrictions/assets/64440265/724a5a32-1488-41e6-b52d-236c53af8179
+   :alt: Example of a Content Restrictions component with a Problem component as a child
 
 These restrictions are applied to children in the Content Restrictions component. So in the Author View, you can add
 any other component as a child of the Content Restrictions component and the restrictions will be applied to those components.
@@ -90,15 +139,30 @@ After entering the correct password, the content will be displayed. If the learn
 
 Here is an example of the message that the learner will see when the content is restricted by a password:
 
-   .. image:: https://github.com/eduNEXT/xblock-content-restrictions/assets/64440265/e6a14193-4370-4752-b82a-751c35afc8e5
-        :alt: Password restriction message
+.. image:: https://github.com/eduNEXT/xblock-content-restrictions/assets/64440265/e6a14193-4370-4752-b82a-751c35afc8e5
+      :alt: Password restriction message
 
 When the learner enters the correct password, the content will be displayed. However, if the learner enters an incorrect password, a message will be displayed indicating that the password is incorrect.
 
-   .. image:: https://github.com/eduNEXT/xblock-content-restrictions/assets/64440265/f345f874-1a58-4f8d-ae12-7fa6087c6c8b
-        :alt: Incorrect password message
+.. image:: https://github.com/eduNEXT/xblock-content-restrictions/assets/64440265/f345f874-1a58-4f8d-ae12-7fa6087c6c8b
+      :alt: Incorrect password message
 
 As specified in the configuration, the learner will see the explanation text and the incorrect password explanation text.
+
+IP Restriction
+--------------
+When the IP restriction is enabled, if the learner's IP address is not in the
+whitelist, the learner will see a message indicating that the content is
+restricted and will not be able to access the content.
+
+Here is an example of the message that the learner will see when the content is
+restricted by an IP address:
+
+.. image:: https://github.com/eduNEXT/xblock-content-restrictions/assets/64033729/e69a4080-8fcd-45fe-9771-25e62b44a9d3
+   :alt: IP restriction message
+
+As specified in the configuration, the learner will see the explanation text.
+
 
 Experimenting with this XBlock in the Workbench
 ************************************************
@@ -182,7 +246,7 @@ Please do not report a potential security issue in public. Please email
 security@edunext.co.
 
 
-.. |ci-badge| image:: https://github.com/eduNEXT/xblock-content-restrictions/workflows/Python%20CI/badge.svg?branch=main
+.. |ci-badge| image:: https://github.com/eduNEXT/xblock-content-restrictions/actions/workflows/ci.yml/badge.svg?branch=main
     :target: https://github.com/eduNEXT/xblock-content-restrictions/actions
     :alt: CI
 

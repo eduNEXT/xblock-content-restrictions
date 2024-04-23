@@ -12,22 +12,37 @@ backports-zoneinfo==0.2.1 ; python_version < "3.9"
     # via
     #   -c requirements/constraints.txt
     #   django
-boto3==1.34.83
+boto3==1.34.85
     # via fs-s3fs
-botocore==1.34.83
+botocore==1.34.85
     # via
     #   boto3
     #   s3transfer
+cffi==1.16.0
+    # via pynacl
+click==8.1.7
+    # via edx-django-utils
 django==4.2.11
     # via
     #   -c https://raw.githubusercontent.com/edx/edx-lint/master/edx_lint/files/common_constraints.txt
     #   django-appconf
+    #   django-crum
     #   django-statici18n
+    #   django-waffle
+    #   edx-django-utils
     #   edx-i18n-tools
     #   openedx-django-pyfs
 django-appconf==1.0.6
     # via django-statici18n
+django-crum==0.7.9
+    # via
+    #   -r requirements/base.in
+    #   edx-django-utils
 django-statici18n==2.4.0
+    # via -r requirements/base.in
+django-waffle==4.1.0
+    # via edx-django-utils
+edx-django-utils==5.12.0
     # via -r requirements/base.in
 edx-i18n-tools==1.5.0
     # via -r requirements/base.in
@@ -57,12 +72,22 @@ markupsafe==2.1.5
     # via
     #   mako
     #   xblock
+newrelic==9.8.0
+    # via edx-django-utils
 openedx-django-pyfs==3.6.0
     # via xblock
 path==16.14.0
     # via edx-i18n-tools
+pbr==6.0.0
+    # via stevedore
 polib==1.2.0
     # via edx-i18n-tools
+psutil==5.9.8
+    # via edx-django-utils
+pycparser==2.22
+    # via cffi
+pynacl==1.5.0
+    # via edx-django-utils
 python-dateutil==2.9.0.post0
     # via
     #   botocore
@@ -84,8 +109,10 @@ six==1.16.0
     #   fs
     #   fs-s3fs
     #   python-dateutil
-sqlparse==0.4.4
+sqlparse==0.5.0
     # via django
+stevedore==5.2.0
+    # via edx-django-utils
 typing-extensions==4.11.0
     # via asgiref
 urllib3==1.26.18

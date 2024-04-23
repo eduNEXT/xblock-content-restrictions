@@ -17,58 +17,58 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: content_restrictions.py:32
+#: content_restrictions.py:40
 msgid "Display Name"
 msgstr ""
 
-#: content_restrictions.py:33
+#: content_restrictions.py:41
 msgid "The display name for this component."
 msgstr ""
 
-#: content_restrictions.py:35
+#: content_restrictions.py:43
 msgid "Content With Access Restrictions"
 msgstr ""
 
-#: content_restrictions.py:39
+#: content_restrictions.py:47
 msgid "Password Restriction"
 msgstr ""
 
-#: content_restrictions.py:40
+#: content_restrictions.py:48
 msgid "When enabled, the content will be restricted by password."
 msgstr ""
 
-#: content_restrictions.py:46
+#: content_restrictions.py:54
 msgid "Password Explanatory Message"
 msgstr ""
 
-#: content_restrictions.py:47
+#: content_restrictions.py:55
 msgid ""
 "This message will be shown when the learner is prompted to enter the "
 "password."
 msgstr ""
 
-#: content_restrictions.py:49
+#: content_restrictions.py:57
 msgid "Please enter the password to access this content."
 msgstr ""
 
-#: content_restrictions.py:53
+#: content_restrictions.py:61
 msgid "Incorrect Password Explanatory Message"
 msgstr ""
 
-#: content_restrictions.py:55
+#: content_restrictions.py:63
 msgid ""
 "This message will be shown when the learner enters an incorrect password."
 msgstr ""
 
-#: content_restrictions.py:58 content_restrictions.py:238
+#: content_restrictions.py:66 content_restrictions.py:348
 msgid "Incorrect password. Please try again."
 msgstr ""
 
-#: content_restrictions.py:62
+#: content_restrictions.py:70
 msgid "Password"
 msgstr ""
 
-#: content_restrictions.py:64
+#: content_restrictions.py:72
 msgid ""
 "Learners will need to type this password to access the content of the "
 "xblock. If the learner does not type the correct password, they will not "
@@ -77,17 +77,62 @@ msgid ""
 "the learner will need to type the new password to access the content."
 msgstr ""
 
-#: content_restrictions.py:74
+#: content_restrictions.py:82
 msgid "User Provided Password"
 msgstr ""
 
-#: content_restrictions.py:76
+#: content_restrictions.py:84
 msgid ""
 "The password that the user has provided. This is used to check if the user "
 "has entered the correct password."
 msgstr ""
 
-#: content_restrictions.py:287
+#: content_restrictions.py:92
+msgid "IP Restriction"
+msgstr ""
+
+#: content_restrictions.py:94
+msgid ""
+"When enabled, the content will be restricted by IP address."
+msgstr ""
+
+#: content_restrictions.py:101
+msgid "IP Whitelist"
+msgstr ""
+
+#: content_restrictions.py:103
+msgid ""
+"List of IP addresses or IP address ranges from which the content can be "
+"accessed. The compatible protocols are IPv4 and IPv6. If the learner's IP "
+"address is not in the whitelist, they will not have access to the content. "
+"The range should be in the CIDR format, e.g. (IPv4) \"192.168.1.0/24\", in "
+"this case only IP addresses from  \"192.168.1.0\" to \"192.168.1.255\" can "
+"access to the content, or (IPv6) \"2001:db8:85a3::/48\", in this case only "
+"IP addresses from \"2001:db8:85a3::\" to "
+"\"2001:db8:85a3:ffff:ffff:ffff:ffff:ffff\" can access to the content. Also, "
+"a single IP address can be provided, e.g. (IPv4) \"172.16.0.0\", or (IPv6) "
+"\"7ac:264a:dd69::\". Alternatively, is possible mix IP addresses and IP "
+"ranges with different formats, e.g. [\"192.168.1.0/24\", \"172.16.0.0\", "
+"\"65c1:e700::/24\", \"5c87::\"]"
+msgstr ""
+
+#: content_restrictions.py:119
+msgid "IP Restriction Explanatory Message"
+msgstr ""
+
+#: content_restrictions.py:121
+msgid ""
+"This message will be shown when the learner is browsing from an IP address "
+"that is not whitelisted."
+msgstr ""
+
+#: content_restrictions.py:126
+msgid ""
+"You are entering from an IP address that is not whitelisted. Please follow "
+"the instructions provided in the course introduction video."
+msgstr ""
+
+#: content_restrictions.py:397
 msgid "Dummy"
 msgstr ""
 

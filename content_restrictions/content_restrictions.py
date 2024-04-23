@@ -1,8 +1,14 @@
 """XBlock for content restrictions."""
+
+import ipaddress
+import logging
+
 import pkg_resources
+from crum import get_current_request
 from django.utils import translation
+from edx_django_utils import ip
 from xblock.core import XBlock
-from xblock.fields import Boolean, Scope, String
+from xblock.fields import Boolean, List, Scope, String
 from xblock.utils.resources import ResourceLoader
 from xblock.utils.studio_editable import StudioContainerWithNestedXBlocksMixin, StudioEditableXBlockMixin
 
@@ -12,6 +18,7 @@ except ModuleNotFoundError:
     from web_fragments.fragment import Fragment
 
 LOCAL_RESOURCE_LOADER = ResourceLoader(__name__)
+log = logging.getLogger(__name__)
 
 
 def _(text):
@@ -81,12 +88,55 @@ class XblockContentRestrictions(
         default="",
     )
 
+    ip_restriction = Boolean(
+        display_name=_("IP Restriction"),
+        help=_(
+            "When enabled, the content will be restricted by IP address."
+        ),
+        scope=Scope.settings,
+        default=False,
+    )
+
+    ip_whitelist = List(
+        display_name=_("IP Whitelist"),
+        help=_(
+            "List of IP addresses or IP address ranges from which the content can be accessed."
+            " The compatible protocols are IPv4 and IPv6. If the learner's IP address is not in the"
+            " whitelist, they will not have access to the content. The range should be in the"
+            ' CIDR format, e.g. (IPv4) "192.168.1.0/24", in this case only IP addresses from '
+            ' "192.168.1.0" to "192.168.1.255" can access to the content, or (IPv6) "2001:db8:85a3::/48",'
+            ' in this case only IP addresses from "2001:db8:85a3::" to "2001:db8:85a3:ffff:ffff:ffff:ffff:ffff"'
+            ' can access to the content. Also, a single IP address can be provided, e.g. (IPv4) "172.16.0.0",'
+            ' or (IPv6) "7ac:264a:dd69::". Alternatively, is possible mix IP addresses and IP ranges'
+            ' with different formats, e.g. ["192.168.1.0/24", "172.16.0.0", "65c1:e700::/24", "5c87::"]'
+        ),
+        scope=Scope.settings,
+        enforce_type=True,
+        default=[],
+    )
+
+    ip_explanation_text = String(
+        display_name=_("IP Restriction Explanatory Message"),
+        help=_(
+            "This message will be shown when the learner is browsing from an IP address"
+            " that is not whitelisted."
+        ),
+        scope=Scope.settings,
+        default=_(
+            "You are entering from an IP address that is not whitelisted. Please follow"
+            " the instructions provided in the course introduction video."
+        ),
+    )
+
     editable_fields = [
         "display_name",
         "password_restriction",
         "password_explanation_text",
         "incorrect_password_explanation_text",
         "password",
+        "ip_restriction",
+        "ip_whitelist",
+        "ip_explanation_text",
     ]
 
     def resource_string(self, path):
@@ -168,10 +218,69 @@ class XblockContentRestrictions(
         Check if the user has access to the content.
 
         - If password restriction is enabled, check if the user has entered the correct password.
+        - If IP restriction is enabled, check if the user has access with the IP whitelist.
         """
-        if self.password_restriction:
-            return bool(self.user_provided_password == self.password)
+        if self.password_restriction and not self.is_correct_password:
+            return False
+        if self.ip_restriction:
+            return self.has_access_with_ip_whitelist(get_current_request())
         return True
+
+    @property
+    def is_correct_password(self) -> bool:
+        """
+        Check if the user has entered the correct password.
+
+        Returns:
+            bool: True if the user has entered the correct password, False otherwise.
+        """
+        return self.user_provided_password == self.password
+
+    def has_access_with_ip_whitelist(self, request) -> bool:
+        """
+        Check if the user has access to the content based on the IP whitelist.
+
+        Args:
+            request (WSGIRequest): The current request object.
+
+        Returns:
+            bool: True if the user has access to the content, False otherwise.
+        """
+        if self.ip_whitelist is None:
+            self.ip_whitelist = []
+
+        client_ips = ip.get_all_client_ips(request)
+        for ip_add_or_range in self.ip_whitelist:
+            if any(self.ip_has_access(client_ip, ip_add_or_range) for client_ip in client_ips):
+                return True
+        return False
+
+    @staticmethod
+    def ip_has_access(client_ip: str, ip_address_or_range: str) -> bool:
+        """
+        Check if the client IP matches the IP address or is in the IP range.
+
+        The IP address or range can be in IPv4 or IPv6 format.
+
+        Args:
+            client_ip (str): The IP address to check.
+            ip_address_or_range (str): The IP address or IP range to check against.
+
+        Returns:
+            bool: True if the IP is in the network, False otherwise.
+        """
+        client_ip = ipaddress.ip_address(client_ip)
+
+        try:
+            ip_address = ipaddress.ip_address(ip_address_or_range)
+            return client_ip == ip_address
+        except ValueError:
+            try:
+                ip_network = ipaddress.ip_network(ip_address_or_range, strict=False)
+                return client_ip in ip_network
+            except ValueError:
+                log.exception(f"Invalid IP address or range: {ip_address_or_range}")
+                return False
 
     def render_restricted_student_view(self):
         """
@@ -213,8 +322,10 @@ class XblockContentRestrictions(
         Returns:
             str: The current restriction template.
         """
-        if self.password_restriction:
+        if self.password_restriction and not self.is_correct_password:
             return "password_restriction.html"
+        if self.ip_restriction:
+            return "ip_restriction.html"
         return "no_access.html"
 
     @XBlock.json_handler
@@ -228,7 +339,7 @@ class XblockContentRestrictions(
             dict: The result of the check.
         """
         self.user_provided_password = data.get("password")
-        if self.user_provided_password == self.password:
+        if self.is_correct_password:
             return {
                 "success": True,
             }

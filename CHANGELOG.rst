@@ -16,7 +16,15 @@ Unreleased
 
 *
 
-0.2.0 – 2024-04-16
+0.3.0 - 2024-04-19
+**********************************************
+
+Added
+=====
+
+* Handlers for ip restriction configurations.
+
+0.2.0 - 2024-04-16
 **********************************************
 
 Added
@@ -25,7 +33,7 @@ Added
 * Handlers for password restriction configurations.
 * Spanish (es_ES/es_419) translations for the xblock.
 
-0.1.0 – 2024-03-26
+0.1.0 - 2024-03-26
 **********************************************
 
 Added
