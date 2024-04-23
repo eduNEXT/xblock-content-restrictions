@@ -17,58 +17,58 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: content_restrictions.py:32
+#: content_restrictions.py:40
 msgid "Display Name"
 msgstr "Nombre a mostrar"
 
-#: content_restrictions.py:33
+#: content_restrictions.py:41
 msgid "The display name for this component."
 msgstr "El nombre para mostrar de este componente."
 
-#: content_restrictions.py:35
+#: content_restrictions.py:43
 msgid "Content With Access Restrictions"
 msgstr "Contenidos con restricciones de acceso"
 
-#: content_restrictions.py:39
+#: content_restrictions.py:47
 msgid "Password Restriction"
 msgstr "Restricción de contraseña"
 
-#: content_restrictions.py:40
+#: content_restrictions.py:48
 msgid "When enabled, the content will be restricted by password."
 msgstr "Si esta opción está activa, entonces el contenido estará restringido por contraseña."
 
-#: content_restrictions.py:46
+#: content_restrictions.py:54
 msgid "Password Explanatory Message"
 msgstr "Mensaje explicativo de la contraseña"
 
-#: content_restrictions.py:47
+#: content_restrictions.py:55
 msgid ""
 "This message will be shown when the learner is prompted to enter the "
 "password."
 msgstr "Este mensaje se mostrará cuando se pida al estudiante que introduzca la contraseña."
 
-#: content_restrictions.py:49
+#: content_restrictions.py:57
 msgid "Please enter the password to access this content."
 msgstr "Introduzca la contraseña para acceder a este contenido."
 
-#: content_restrictions.py:53
+#: content_restrictions.py:61
 msgid "Incorrect Password Explanatory Message"
 msgstr "Mensaje explicativo de contraseña incorrecta"
 
-#: content_restrictions.py:55
+#: content_restrictions.py:63
 msgid ""
 "This message will be shown when the learner enters an incorrect password."
 msgstr "Este mensaje se mostrará cuando el estudiante introduzca una contraseña incorrecta."
 
-#: content_restrictions.py:58 content_restrictions.py:243
+#: content_restrictions.py:66 content_restrictions.py:348
 msgid "Incorrect password. Please try again."
 msgstr "Contraseña incorrecta. Por favor, inténtelo de nuevo."
 
-#: content_restrictions.py:62
+#: content_restrictions.py:70
 msgid "Password"
 msgstr "Contraseña"
 
-#: content_restrictions.py:64
+#: content_restrictions.py:72
 msgid ""
 "Learners will need to type this password to access the content of the "
 "xblock. If the learner does not type the correct password, they will not "
@@ -82,15 +82,78 @@ msgstr
 " ya haya accedido al contenido, el estudiante tendrá que escribir la nueva contraseña"
 " para acceder al contenido."
 
-#: content_restrictions.py:74
+#: content_restrictions.py:82
 msgid "User Provided Password"
 msgstr ""
 
-#: content_restrictions.py:76
+#: content_restrictions.py:84
 msgid ""
 "The password that the user has provided. This is used to check if the user "
 "has entered the correct password."
 msgstr ""
+
+#: content_restrictions.py:92
+msgid "IP Restriction"
+msgstr "Restricción de IP"
+
+#: content_restrictions.py:94
+msgid ""
+"When enabled, the content will be restricted by IP address."
+msgstr ""
+"Si esta opción está activa, entonces el contenido estará restringido por dirección IP."
+
+#: content_restrictions.py:101
+msgid "IP Whitelist"
+msgstr "Lista blanca de IP"
+
+#: content_restrictions.py:103
+msgid ""
+"List of IP addresses or IP address ranges from which the content can be "
+"accessed. The compatible protocols are IPv4 and IPv6. If the learner's IP "
+"address is not in the whitelist, they will not have access to the content. "
+"The range should be in the CIDR format, e.g. (IPv4) \"192.168.1.0/24\", in "
+"this case only IP addresses from  \"192.168.1.0\" to \"192.168.1.255\" can "
+"access to the content, or (IPv6) \"2001:db8:85a3::/48\", in this case only "
+"IP addresses from \"2001:db8:85a3::\" to "
+"\"2001:db8:85a3:ffff:ffff:ffff:ffff:ffff\" can access to the content. Also, "
+"a single IP address can be provided, e.g. (IPv4) \"172.16.0.0\", or (IPv6) "
+"\"7ac:264a:dd69::\". Alternatively, is possible mix IP addresses and IP "
+"ranges with different formats, e.g. [\"192.168.1.0/24\", \"172.16.0.0\", "
+"\"65c1:e700::/24\", \"5c87::\"]"
+msgstr ""
+"Lista de direcciones IP o rangos de direcciones IP desde los cuales se puede "
+"acceder al contenido. Los protocolos compatibles son IPv4 e IPv6. Si la "
+"dirección IP del estudiante no está en la lista blanca, no tendrá acceso al "
+"contenido. El rango debe estar en formato CIDR, por ejemplo (IPv4) "
+"\"192.168.1.0/24\", en este caso solo las direcciones IP desde \"192.168.1.0\""
+" hasta \"192.168.1.255\" pueden acceder al contenido, o (IPv6) \"2001:db8:85a3::/48\""
+", en este caso solo las direcciones IP desde \"2001:db8:85a3::\" hasta "
+"\"2001:db8:85a3:ffff:ffff:ffff:ffff:ffff\" pueden acceder al contenido. "
+"También se puede proporcionar una sola dirección IP, por ejemplo (IPv4) "
+"\"172.16.0.0\", o (IPv6) \"7ac:264a:dd69::\". Alternativamente, es posible "
+"mezclar direcciones IP y rangos de direcciones IP con diferentes formatos, "
+"por ejemplo [\"192.168.1.0/24\", \"172.16.0.0\", \"65c1:e700::/24\", \"5c87::\"]"
+
+#: content_restrictions.py:119
+msgid "IP Restriction Explanatory Message"
+msgstr "Mensaje explicativo de restricción por IP"
+
+#: content_restrictions.py:121
+msgid ""
+"This message will be shown when the learner is browsing from an IP address "
+"that is not whitelisted."
+msgstr ""
+"Este mensaje se mostrará cuando el estudiante esté navegando desde una "
+"dirección IP que no está en la lista blanca."
+
+#: content_restrictions.py:126
+msgid ""
+"You are entering from an IP address that is not whitelisted. Please follow "
+"the instructions provided in the course introduction video."
+msgstr ""
+"Está accediendo desde una dirección IP que no está en la lista blanca. Por "
+"favor, siga las instrucciones proporcionadas en el video de introducción del "
+"curso."
 
 #: content_restrictions.py:292
 msgid "Dummy"

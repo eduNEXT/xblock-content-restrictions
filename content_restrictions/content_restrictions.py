@@ -91,7 +91,7 @@ class XblockContentRestrictions(
     ip_restriction = Boolean(
         display_name=_("IP Restriction"),
         help=_(
-            "When enabled, the content will be restricted by a range of IP addresses."
+            "When enabled, the content will be restricted by IP address."
         ),
         scope=Scope.settings,
         default=False,
@@ -116,7 +116,7 @@ class XblockContentRestrictions(
     )
 
     ip_explanation_text = String(
-        display_name=_("IP Explanatory Message"),
+        display_name=_("IP Restriction Explanatory Message"),
         help=_(
             "This message will be shown when the learner is browsing from an IP address"
             " that is not whitelisted."
