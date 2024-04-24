@@ -177,6 +177,6 @@ setup(
             'content_restrictions = content_restrictions:XblockContentRestrictions',
         ]
     },
-    package_data=package_data("content_restrictions", ["static", "public"]),
+    package_data=package_data("content_restrictions", ["static", "public", "translations"]),
 
 )
