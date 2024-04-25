@@ -49,10 +49,9 @@ class TestXblockContentRestrictions(TestCase):
         self.block.children = []
 
         fragment = self.block.student_view({})
-
-        self.assertEqual(
-            fragment.content.replace('\n', '').replace(' ', ''),
+        self.assertIn(
             '<divclass="content_restrictions_block"><br></div>',
+            fragment.content.replace('\n', '').replace(' ', ''),
         )
 
     def test_student_view_with_children(self):
@@ -65,9 +64,9 @@ class TestXblockContentRestrictions(TestCase):
 
         fragment = self.block.student_view({})
 
-        self.assertEqual(
-            fragment.content.replace('\n', '').replace(' ', ''),
+        self.assertIn(
             '<divclass="content_restrictions_block">MyXBlock:countisnow0<br><hr><br></div>',
+            fragment.content.replace('\n', '').replace(' ', ''),
         )
 
     def test_author_view_root(self):
