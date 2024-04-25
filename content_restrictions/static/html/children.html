@@ -10,10 +10,10 @@
 <!--
 This is a simplified version of this script:
 https://github.com/openedx/edx-platform/blob/master/lms/templates/courseware/courseware-chromeless.html#L119-L217
-The script is responsible for resizing the iframe containing the controlled navigation block.
+The script is responsible for resizing the iframe containing the content restriction block.
 By default, in edx-platform, the script is loaded in the courseware-chromeless.html template,
-however, in chromium based browsers, the script is not executed when navigating between child
-components. So, we need to include the script manually.
+however, in chromium based browsers, the script is not executed when the content of the
+component changes. So, we need to include the script manually.
 -->
 <script type="text/javascript">
     (function () {
@@ -33,6 +33,9 @@ components. So, we need to include the script manually.
                             height: newHeight,
                         },
                     },
+                    // In chromium based browsers `document.referrer` is not returning the URL of the
+                    // MFE, instead it returns the URL of the LMS, so we need to accept all destination
+                    // sources so that the message can be sent without problems.
                     "*"
                 );
             }
