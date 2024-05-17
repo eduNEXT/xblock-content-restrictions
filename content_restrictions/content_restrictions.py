@@ -431,11 +431,9 @@ class XblockContentRestrictions(StudioContainerWithNestedXBlocksMixin, StudioEdi
         if self.seb_restriction:
             seb_settings["ENABLED"] = True
             seb_settings["ALLOW_MFE_ACCESS"] = True
-            seb_settings["BROWSER_KEYS"] = list(set(seb_settings.get("BROWSER_KEYS", []) + self.seb_browser_keys))
-            seb_settings["CONFIG_KEYS"] = list(set(seb_settings.get("CONFIG_KEYS", []) + self.seb_config_keys))
-            seb_settings["WHITELIST_PATHS"] = list(
-                set(seb_settings.get("WHITELIST_PATHS", []) + self.seb_whitelist_paths)
-            )
+            seb_settings["BROWSER_KEYS"] = self.seb_browser_keys or []
+            seb_settings["CONFIG_KEYS"] = self.seb_config_keys or []
+            seb_settings["WHITELIST_PATHS"] = self.seb_whitelist_paths or []
             seb_settings["BLACKLIST_VERTICALS"] = list(set(seb_settings.get("BLACKLIST_VERTICALS", []) + [parent_id]))
         elif seb_settings and parent_id in seb_settings["BLACKLIST_VERTICALS"]:
             seb_settings["BLACKLIST_VERTICALS"].remove(parent_id)
