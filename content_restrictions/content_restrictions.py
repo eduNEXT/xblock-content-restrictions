@@ -185,7 +185,8 @@ class XblockContentRestrictions(StudioContainerWithNestedXBlocksMixin, StudioEdi
         data = pkg_resources.resource_string(__name__, path)
         return data.decode("utf8")
 
-    def get_seb_settings(self, other_course_settings: dict) -> dict:
+    @staticmethod
+    def get_seb_settings(other_course_settings: dict) -> dict:
         """
         Get the Safe Exam Browser settings.
 
