@@ -1,3 +1,9 @@
 [run]
 branch = True
 source = content_restrictions
+omit =
+    *admin.py
+    */public/*
+    */tests/*
+    */settings/*
+    */edxapp_wrapper/*
