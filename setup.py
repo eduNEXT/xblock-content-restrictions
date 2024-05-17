@@ -175,7 +175,13 @@ setup(
     entry_points={
         'xblock.v1': [
             'content_restrictions = content_restrictions:XblockContentRestrictions',
-        ]
+        ],
+        'lms.djangoapp': [
+            'content_restrictions = content_restrictions.apps:ContentRestrictionsConfig',
+        ],
+        'cms.djangoapp': [
+            'content_restrictions = content_restrictions.apps:ContentRestrictionsConfig',
+        ],
     },
     package_data=package_data("content_restrictions", ["static", "public", "translations"]),
 
