@@ -6,8 +6,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: 0.1a\n"
-"Report-Msgid-Bugs-To: openedx-translation@googlegroups.com\n"
-"POT-Creation-Date: 2023-06-13 08:00+0000\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-05-17 08:48-0500\n"
 "PO-Revision-Date: 2023-06-13 09:00+0000\n"
 "Last-Translator: \n"
 "Language-Team: openedx-translation <openedx-translation@googlegroups.com>\n"
@@ -17,58 +17,58 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: content_restrictions.py:40
+#: content_restrictions.py:38
 msgid "Display Name"
 msgstr ""
 
-#: content_restrictions.py:41
+#: content_restrictions.py:39
 msgid "The display name for this component."
 msgstr ""
 
-#: content_restrictions.py:43
+#: content_restrictions.py:41
 msgid "Content With Access Restrictions"
 msgstr ""
 
-#: content_restrictions.py:47
+#: content_restrictions.py:45
 msgid "Password Restriction"
 msgstr ""
 
-#: content_restrictions.py:48
+#: content_restrictions.py:46
 msgid "When enabled, the content will be restricted by password."
 msgstr ""
 
-#: content_restrictions.py:54
+#: content_restrictions.py:52
 msgid "Password Explanatory Message"
 msgstr ""
 
-#: content_restrictions.py:55
+#: content_restrictions.py:53
 msgid ""
 "This message will be shown when the learner is prompted to enter the "
 "password."
 msgstr ""
 
-#: content_restrictions.py:57
+#: content_restrictions.py:55
 msgid "Please enter the password to access this content."
 msgstr ""
 
-#: content_restrictions.py:61
+#: content_restrictions.py:59
 msgid "Incorrect Password Explanatory Message"
 msgstr ""
 
-#: content_restrictions.py:63
+#: content_restrictions.py:60
 msgid ""
 "This message will be shown when the learner enters an incorrect password."
 msgstr ""
 
-#: content_restrictions.py:66 content_restrictions.py:348
+#: content_restrictions.py:62 content_restrictions.py:404
 msgid "Incorrect password. Please try again."
 msgstr ""
 
-#: content_restrictions.py:70
+#: content_restrictions.py:66
 msgid "Password"
 msgstr ""
 
-#: content_restrictions.py:72
+#: content_restrictions.py:68
 msgid ""
 "Learners will need to type this password to access the content of the "
 "xblock. If the learner does not type the correct password, they will not "
@@ -77,30 +77,29 @@ msgid ""
 "the learner will need to type the new password to access the content."
 msgstr ""
 
-#: content_restrictions.py:82
+#: content_restrictions.py:78
 msgid "User Provided Password"
 msgstr ""
 
-#: content_restrictions.py:84
+#: content_restrictions.py:80
 msgid ""
 "The password that the user has provided. This is used to check if the user "
 "has entered the correct password."
 msgstr ""
 
-#: content_restrictions.py:92
+#: content_restrictions.py:88
 msgid "IP Restriction"
 msgstr ""
 
-#: content_restrictions.py:94
-msgid ""
-"When enabled, the content will be restricted by IP address."
+#: content_restrictions.py:89
+msgid "When enabled, the content will be restricted by IP address."
 msgstr ""
 
-#: content_restrictions.py:101
+#: content_restrictions.py:95
 msgid "IP Whitelist"
 msgstr ""
 
-#: content_restrictions.py:103
+#: content_restrictions.py:97
 msgid ""
 "List of IP addresses or IP address ranges from which the content can be "
 "accessed. The compatible protocols are IPv4 and IPv6. If the learner's IP "
@@ -108,31 +107,66 @@ msgid ""
 "The range should be in the CIDR format, e.g. (IPv4) \"192.168.1.0/24\", in "
 "this case only IP addresses from  \"192.168.1.0\" to \"192.168.1.255\" can "
 "access to the content, or (IPv6) \"2001:db8:85a3::/48\", in this case only "
-"IP addresses from \"2001:db8:85a3::\" to "
-"\"2001:db8:85a3:ffff:ffff:ffff:ffff:ffff\" can access to the content. Also, "
-"a single IP address can be provided, e.g. (IPv4) \"172.16.0.0\", or (IPv6) "
-"\"7ac:264a:dd69::\". Alternatively, is possible mix IP addresses and IP "
-"ranges with different formats, e.g. [\"192.168.1.0/24\", \"172.16.0.0\", "
-"\"65c1:e700::/24\", \"5c87::\"]"
+"IP addresses from \"2001:db8:85a3::\" to \"2001:db8:85a3:ffff:ffff:ffff:ffff:"
+"ffff\" can access to the content. Also, a single IP address can be provided, "
+"e.g. (IPv4) \"172.16.0.0\", or (IPv6) \"7ac:264a:dd69::\". Alternatively, is "
+"possible mix IP addresses and IP ranges with different formats, e.g. "
+"[\"192.168.1.0/24\", \"172.16.0.0\", \"65c1:e700::/24\", \"5c87::\"]"
 msgstr ""
 
-#: content_restrictions.py:119
+#: content_restrictions.py:113
 msgid "IP Restriction Explanatory Message"
 msgstr ""
 
-#: content_restrictions.py:121
+#: content_restrictions.py:114
 msgid ""
 "This message will be shown when the learner is browsing from an IP address "
 "that is not whitelisted."
 msgstr ""
 
-#: content_restrictions.py:126
+#: content_restrictions.py:117
 msgid ""
 "You are entering from an IP address that is not whitelisted. Please follow "
 "the instructions provided in the course introduction video."
 msgstr ""
 
-#: content_restrictions.py:397
+#: content_restrictions.py:123
+msgid "Safe Exam Browser Restriction"
+msgstr ""
+
+#: content_restrictions.py:125
+msgid ""
+"When enabled, the content will be restricted to be accessed only from Safe "
+"Exam Browser. To use this restriction, it is recommended to have the setting "
+"'SEB_INDIVIDUAL_COURSE_ACTIVATION = True' in the platform. This setting "
+"allows activating the Safe Exam Browser restriction for individual courses. "
+"IMPORTANT: seb-openedx plugin must be installed in the Open edX platform."
+msgstr ""
+
+#: content_restrictions.py:135
+msgid "SEB Browser Keys"
+msgstr ""
+
+#: content_restrictions.py:136 content_restrictions.py:144
+msgid "List of keys that are allowed to be accessed from Safe Exam Browser."
+msgstr ""
+
+#: content_restrictions.py:143
+msgid "SEB Config Keys"
+msgstr ""
+
+#: content_restrictions.py:151
+msgid "SEB Whitelist Paths"
+msgstr ""
+
+#: content_restrictions.py:153
+msgid ""
+"List of paths that are allowed to be accessed from Safe Exam Browser. To "
+"allow a restriction at the unit level it is necessary to maintain the "
+"\"courseware\" path in the list."
+msgstr ""
+
+#: content_restrictions.py:516
 msgid "Dummy"
 msgstr ""
 

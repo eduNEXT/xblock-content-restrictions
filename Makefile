@@ -13,6 +13,7 @@ EXTRACTED_DJANGOJS := $(EXTRACT_DIR)/djangojs-partial.po
 EXTRACTED_TEXT := $(EXTRACT_DIR)/text.po
 JS_TARGET := $(PACKAGE_NAME)/public/js/translations
 TRANSLATIONS_DIR := $(PACKAGE_NAME)/translations
+LOCALES := en es_ES
 
 help:
 	@perl -nle'print $& if m{^[\.a-zA-Z_-]+:.*?## .*$$}' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m  %-25s\033[0m %s\n", $$1, $$2}'
@@ -75,8 +76,8 @@ symlink_translations:
 
 rename_po_files: ## Rename .po files to django.po
 	@for locale in $(LOCALES); do \
-		if test -f $(PACKAGE_NAME)/locale/$$locale/LC_MESSAGES/text.po; then \
-			mv $(PACKAGE_NAME)/locale/$$locale/LC_MESSAGES/text.po $(PACKAGE_NAME)/locale/$$locale/LC_MESSAGES/django.po; \
+		if test -f $(PACKAGE_NAME)/conf/locale/$$locale/LC_MESSAGES/text.po; then \
+			mv $(PACKAGE_NAME)/conf/locale/$$locale/LC_MESSAGES/text.po $(PACKAGE_NAME)/conf/locale/$$locale/LC_MESSAGES/django.po; \
 		else \
 			echo "Creating .po file for $$locale"; \
 		fi; \
@@ -85,7 +86,7 @@ rename_po_files: ## Rename .po files to django.po
 extract_translations: symlink_translations rename_po_files ## Extract strings to be translated, outputting .po files
 	@for locale in $(LOCALES); do \
         cd $(PACKAGE_NAME) && django-admin makemessages -l $$locale -v1 -d django --no-obsolete && cd ..; \
-		mv $(PACKAGE_NAME)/locale/$$locale/LC_MESSAGES/django.po $(PACKAGE_NAME)/locale/$$locale/LC_MESSAGES/text.po; \
+		mv $(PACKAGE_NAME)/conf/locale/$$locale/LC_MESSAGES/django.po $(PACKAGE_NAME)/conf/locale/$$locale/LC_MESSAGES/text.po; \
     done
 
 # extract_translations: symlink_translations ## extract strings to be translated, outputting .po files
