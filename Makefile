@@ -89,11 +89,6 @@ extract_translations: symlink_translations rename_po_files ## Extract strings to
 		mv $(PACKAGE_NAME)/conf/locale/$$locale/LC_MESSAGES/django.po $(PACKAGE_NAME)/conf/locale/$$locale/LC_MESSAGES/text.po; \
     done
 
-# extract_translations: symlink_translations ## extract strings to be translated, outputting .po files
-# 	cd $(PACKAGE_NAME) && i18n_tool extract
-# 	mv $(EXTRACTED_DJANGO) $(EXTRACTED_TEXT)
-# 	if [ -f "$(EXTRACTED_DJANGOJS)" ]; then cat $(EXTRACTED_DJANGOJS) >> $(EXTRACTED_TEXT); rm $(EXTRACTED_DJANGOJS); fi
-
 compile_translations: symlink_translations ## compile translation files, outputting .mo files for each supported language
 	cd $(PACKAGE_NAME) && i18n_tool generate -v
 	python manage.py compilejsi18n --namespace ContentRestrictionsI18N --output $(JS_TARGET)
