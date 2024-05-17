@@ -350,9 +350,9 @@ class TestXblockContentRestrictions(TestCase):
         expected_seb_settings = {
             "ENABLED": True,
             "ALLOW_MFE_ACCESS": True,
-            "BROWSER_KEYS": ["bk1", "bk2", "bk3", "bk4"],
-            "CONFIG_KEYS": ["ck1", "ck2", "ck3", "ck4"],
-            "WHITELIST_PATHS": ["courseware", "wiki"],
+            "BROWSER_KEYS": ["bk3", "bk4"],
+            "CONFIG_KEYS": ["ck3", "ck4"],
+            "WHITELIST_PATHS": ["courseware"],
             "BLACKLIST_VERTICALS": ["test-parent-id", "another-parent-id"],
         }
 
