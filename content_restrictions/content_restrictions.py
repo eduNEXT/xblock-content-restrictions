@@ -441,7 +441,7 @@ class XblockContentRestrictions(StudioContainerWithNestedXBlocksMixin, StudioEdi
     @XBlock.json_handler
     def submit_studio_edits(self, data, suffix=""):
         """
-        AJAX handler for studio_view() Save button
+        AJAX handler for studio_view() Save button.
         """
         values = {}  # dict of new field values we are updating
         to_reset = []  # list of field names to delete from this XBlock
