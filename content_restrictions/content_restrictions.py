@@ -123,9 +123,8 @@ class XblockContentRestrictions(StudioContainerWithNestedXBlocksMixin, StudioEdi
         display_name=_("SEB Restriction"),
         help=_(
             "When enabled, the content will be restricted to be accessed only from Safe Exam Browser. "
-            "To use this restriction, it is recommended to have the setting 'SEB_INDIVIDUAL_COURSE_ACTIVATION = True' "
-            "in the platform. This setting allows activating the Safe Exam Browser restriction for individual "
-            "courses. IMPORTANT: seb-openedx plugin must be installed in the Open edX platform."
+            'IMPORTANT: To use this restriction "seb-openedx" plugin must be installed in the Open edX '
+            "platform. It is also recommended to have the Individual Course Activation enabled."
         ),
         scope=Scope.settings,
         default=False,
