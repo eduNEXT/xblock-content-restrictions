@@ -199,14 +199,14 @@ class XblockContentRestrictions(StudioContainerWithNestedXBlocksMixin, StudioEdi
 
     def set_seb_keys_and_paths(self) -> None:
         """
-        Set the keys and whitelist_paths for Safe Exam Browser obtained from the other course settings.
+        Set the Safe Exam Browser keys and paths in the XBlock fields.
         """
         course_module = modulestore().get_course(self.course_id)
         seb_settings = self.get_seb_settings(course_module.other_course_settings)
 
         self.seb_browser_keys = seb_settings.get("BROWSER_KEYS", [])
         self.seb_config_keys = seb_settings.get("CONFIG_KEYS", [])
-        self.seb_whitelist_paths = seb_settings.get("WHITELIST_PATHS", [])
+        self.seb_whitelist_paths = seb_settings.get("WHITELIST_PATHS", ["courseware"])
 
     def author_view(self, context):
         """
@@ -223,7 +223,7 @@ class XblockContentRestrictions(StudioContainerWithNestedXBlocksMixin, StudioEdi
 
         return fragment
 
-    def studio_view(self, context):
+    def studio_view(self, context):  # pragma: no cover
         """
         Render a form for editing this XBlock with translations.
         """
@@ -414,14 +414,14 @@ class XblockContentRestrictions(StudioContainerWithNestedXBlocksMixin, StudioEdi
             "error_message": incorrect_password_explanation_text,
         }
 
-    def set_seb_settings(self) -> None:
+    def set_seb_settings_in_other_course_settings(self) -> None:
         """
-        Set the Safe Exam Browser settings.
+        Set the Safe Exam Browser settings in the other course settings.
 
-        First, get the other course settings and the Safe Exam Browser settings.
-        If the Safe Exam Browser restriction is enabled, add all the necessary settings to the
-        Safe Exam Browser settings. If disabled, remove the current vertical from the blacklist.
-        Finally, update the course module with the new settings.
+        First, get the other course settings and the Safe Exam Browser settings. If the Safe
+        Exam Browser restriction is enabled, add all the necessary settings to the Safe Exam
+        Browser settings. If disabled, remove the current vertical from the blacklist. Finally,
+        update the course module with the new settings.
         """
         course_module = modulestore().get_course(self.course_id)
         other_course_settings = course_module.other_course_settings
@@ -445,7 +445,7 @@ class XblockContentRestrictions(StudioContainerWithNestedXBlocksMixin, StudioEdi
         modulestore().update_item(course_module, self.scope_ids.user_id)
 
     @XBlock.json_handler
-    def submit_studio_edits(self, data, suffix=""):
+    def submit_studio_edits(self, data, suffix=""):  # pragma: no cover
         """
         AJAX handler for studio_view() Save button.
         """
@@ -471,7 +471,7 @@ class XblockContentRestrictions(StudioContainerWithNestedXBlocksMixin, StudioEdi
                 setattr(self, field_name, value)
             for field_name in to_reset:
                 self.fields[field_name].delete_from(self)  # pylint: disable=unsubscriptable-object
-            self.set_seb_settings()
+            self.set_seb_settings_in_other_course_settings()
             return {"result": "success"}
         else:
             raise JsonHandlerError(400, validation.to_json())
